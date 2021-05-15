@@ -1,0 +1,7 @@
+book.tex
+*.aux
+*.log
+*.pdf
+*.toc
+*.thm
+.current-revision
