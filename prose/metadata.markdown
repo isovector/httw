@@ -1,15 +1,15 @@
 ---
-title: Algebra-Driven Design
+title: How These Things Work
 subtitle: Elegant Software from Simple Building Blocks
 author: Sandy Maguire
-rights: © 2020 Sandy Maguire
+rights: © 2021 Sandy Maguire
 language: en-US
 book: true
 numbersections: true
 fontsize: 11pt
 # mainfont: JT Symington
-monofont: Inconsolata
-sansfont: Cabin
+# monofont: Inconsolata
+# sansfont: Cabin
 toc: true
 geometry:
   - top=25mm

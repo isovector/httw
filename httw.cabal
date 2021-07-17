@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 67e39eb7e4882dec7838f2c3ecc01686d09b40a3b8a8885a3c1a9d654dadb407
+-- hash: 82ebc5b510456264cffdad348b2c34f598be44064354a233277f4ca91c1f6ecf
 
 name:           httw
 version:        0.1.0.0
@@ -23,15 +23,7 @@ source-repository head
 
 library
   exposed-modules:
-      QuickSpec.Extra
-      Scavenge.App
-      Scavenge.ClueState
-      Scavenge.CPS
-      Scavenge.Initial
-      Scavenge.InputFilter
-      Scavenge.Results
-      Scavenge.Spec
-      Scavenge.Test
+      Computer
       Tiles.Efficient
       Tiles.Initial
   other-modules:
@@ -41,16 +33,11 @@ library
   default-extensions: ConstraintKinds DeriveGeneric GeneralizedNewtypeDeriving InstanceSigs KindSignatures LambdaCase OverloadedStrings RecordWildCards ScopedTypeVariables StandaloneDeriving TupleSections TypeApplications ViewPatterns DerivingStrategies DerivingVia
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-uni-patterns -Wincomplete-record-updates -Wredundant-constraints -fhide-source-paths -Wpartial-fields -Wmissing-deriving-strategies
   build-depends:
-      JuicyPixels
-    , QuickCheck
-    , base >=4.7 && <5
+      base >=4.7 && <5
     , bytestring
+    , catalyst
+    , circuitry
     , containers
-    , dlist
-    , generic-data
     , hashable
-    , monoid-subclasses
-    , monoidal-containers
     , mtl
-    , multiset
   default-language: Haskell2010
