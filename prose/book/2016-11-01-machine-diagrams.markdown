@@ -119,10 +119,9 @@ will continue to eschew any mention of "truth" here.
 One of the simplest machines is the **not machine**, which has this function
 table:
 
-| Input | Output |
-|:-----:|:------:|
-| 0     | 1      |
-| 1     | 0      |
+```{design=code/Design.hs fn=truth label="Example 1"}
+notGate
+```
 
 But how should we interpret this? As you can probably guess, the *not machine*
 flips incoming hot wires to be output as cold, and likewise changes off wires to
@@ -130,10 +129,8 @@ be output as on.
 
 Consider the following diagram:
 
-``` {#not_box}
-circuit = wireLabel "a=1" ||| blackBox "Not" undefined
-                          ||| inputWire
-                          ||| wireLabel "b"
+```{#fig:ex1 design=code/Design.hs label="Example 1"}
+component "not" notGate
 ```
 
 In this diagram, the wire labeled `a` has value 1. The wire labeled `b` doesn't
@@ -152,8 +149,8 @@ other people call them, and I wouldn't want people to look at you like you're
 crazy when you're discussing these things around the water-cooler. Redrawing
 the last diagram with a *not gate*:
 
-``` {#not_gate}
-circuit = notGate undefined ||| inputWire
+```{#fig:ex2 design=code/Design.hs label="Example 1"}
+notGate
 ```
 
 This concludes our discussion of machine diagrams. Next we will look at more

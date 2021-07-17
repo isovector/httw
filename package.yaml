@@ -22,7 +22,14 @@ dependencies:
 - bytestring
 - hashable
 - circuitry
-- catalyst
+- circus
+- process
+- clash-prelude
+- ghc-typelits-natnormalise
+- ghc-typelits-knownnat
+- ghc-typelits-extra
+- QuickCheck
+- generic-arbitrary
 
 ghc-options:
   - -Wall
@@ -34,23 +41,61 @@ ghc-options:
   - -fhide-source-paths
   - -Wpartial-fields
   - -Wmissing-deriving-strategies
+  - -fplugin GHC.TypeLits.Extra.Solver
+  - -fplugin GHC.TypeLits.KnownNat.Solver
+  - -fplugin GHC.TypeLits.Normalise
 
 default-extensions:
-  - ConstraintKinds
-  - DeriveGeneric
-  - GeneralizedNewtypeDeriving
-  - InstanceSigs
-  - KindSignatures
-  - LambdaCase
-  - OverloadedStrings
-  - RecordWildCards
-  - ScopedTypeVariables
-  - StandaloneDeriving
+  - EmptyCase
+  - PostfixOperators
   - TupleSections
+  - NamedFieldPuns
+  - BangPatterns
+  - BinaryLiterals
+  - HexFloatLiterals
+  - NumericUnderscores
+  - GADTSyntax
+  - RankNTypes
   - TypeApplications
-  - ViewPatterns
+  - PolyKinds
+  - ExistentialQuantification
+  - TypeOperators
+  - ConstraintKinds
+  - ExplicitForAll
+  - KindSignatures
+  - NamedWildCards
+  - ScopedTypeVariables
+  - FlexibleContexts
+  - FlexibleInstances
+  - MultiParamTypeClasses
+  - ConstrainedClassMethods
+  - InstanceSigs
+  - TypeSynonymInstances
+  - DeriveDataTypeable
+  - DeriveFoldable
+  - DeriveFunctor
+  - DeriveTraversable
+  - StandaloneDeriving
+  - EmptyDataDeriving
+  - DeriveLift
+  - GeneralisedNewtypeDeriving
+  - DeriveGeneric
   - DerivingStrategies
   - DerivingVia
+  - NumDecimals
+  - ViewPatterns
+  - PatternSynonyms
+  - TypeFamilies
+  - DeriveAnyClass
+  - NoStarIsType
+  - DataKinds
+  - DefaultSignatures
+  - TypeApplications
+  - LambdaCase
+  - OverloadedLabels
+  - InstanceSigs
+  - RoleAnnotations
+  - NoMonomorphismRestriction
 
 library:
   source-dirs: code/

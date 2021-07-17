@@ -5,13 +5,15 @@ packages:
 
 extra-deps:
 - ../circuitry
+- ../ghc-typelits-extra
+- circus-0.1.0.0
+- unordered-containers-0.2.12.0
+- clash-prelude-1.4.1
+- arrows-0.4.4.2@sha256:a260222b766da922657e302aa7c0409451913e1e503798a47a213a61ba382460,1235
+- Stream-0.4.7.2@sha256:ed78165aa34c4e23dc53c9072f8715d414a585037f2145ea0eb2b38300354c53,1009
+- lazysmallcheck-0.6@sha256:dac7a1e4877681f1260309e863e896674dd6efc1159897b7945893e693f2a6bc,1696
 - git: https://github.com/lierdakil/pandoc-crossref.git
   commit: 28db58fa4efc4231ac774958ac20eb2275d87b86
-- catalyst-0.0.0.1@sha256:a313d125b4f322a47439914f472dc2f07ec47ef02efa5a6154fb97dfad2fcd33,1548
-- recover-rtti-0.3.0.0@sha256:52b8ccd7333489d497a2e25bba8f5d6c7ad4dedecfc0218333f395ae639d92f6,3555
 - data-accessor-template-0.2.1.16@sha256:be06c253e9d8bb77a942d20e8973b112c1d30161cf5a6934bc36ee0f04d9e27f,2901
 - roman-numerals-0.5.1.5@sha256:819d04d9d442b24629dd058f6f0b02bd78e9f9ae99538bc44ca448f1cb2b7b01,1208
-
-
-
 

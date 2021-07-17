@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.33.0.
+-- This file has been generated from package.yaml by hpack version 0.34.4.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 82ebc5b510456264cffdad348b2c34f598be44064354a233277f4ca91c1f6ecf
+-- hash: 55bde20338574ac7fd4bb047c018bf141633b275f11d5a4dfede52d45150fc7c
 
 name:           httw
 version:        0.1.0.0
@@ -23,21 +23,88 @@ source-repository head
 
 library
   exposed-modules:
-      Computer
-      Tiles.Efficient
-      Tiles.Initial
+      Design
+      Take2.Computer.Addressed
+      Take2.Computer.ALU
+      Take2.Computer.Bus
+      Take2.Computer.CPU
+      Take2.Computer.Examples
+      Take2.Computer.Instruction
+      Take2.Computer.Math
+      Take2.Computer.Memory
+      Take2.Computer.Poly
+      Take2.Computer.Register
+      Take2.Computer.Simple
+      TruthTable
   other-modules:
       Paths_httw
   hs-source-dirs:
       code/
-  default-extensions: ConstraintKinds DeriveGeneric GeneralizedNewtypeDeriving InstanceSigs KindSignatures LambdaCase OverloadedStrings RecordWildCards ScopedTypeVariables StandaloneDeriving TupleSections TypeApplications ViewPatterns DerivingStrategies DerivingVia
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-uni-patterns -Wincomplete-record-updates -Wredundant-constraints -fhide-source-paths -Wpartial-fields -Wmissing-deriving-strategies
+  default-extensions:
+      EmptyCase
+      PostfixOperators
+      TupleSections
+      NamedFieldPuns
+      BangPatterns
+      BinaryLiterals
+      HexFloatLiterals
+      NumericUnderscores
+      GADTSyntax
+      RankNTypes
+      TypeApplications
+      PolyKinds
+      ExistentialQuantification
+      TypeOperators
+      ConstraintKinds
+      ExplicitForAll
+      KindSignatures
+      NamedWildCards
+      ScopedTypeVariables
+      FlexibleContexts
+      FlexibleInstances
+      MultiParamTypeClasses
+      ConstrainedClassMethods
+      InstanceSigs
+      TypeSynonymInstances
+      DeriveDataTypeable
+      DeriveFoldable
+      DeriveFunctor
+      DeriveTraversable
+      StandaloneDeriving
+      EmptyDataDeriving
+      DeriveLift
+      GeneralisedNewtypeDeriving
+      DeriveGeneric
+      DerivingStrategies
+      DerivingVia
+      NumDecimals
+      ViewPatterns
+      PatternSynonyms
+      TypeFamilies
+      DeriveAnyClass
+      NoStarIsType
+      DataKinds
+      DefaultSignatures
+      TypeApplications
+      LambdaCase
+      OverloadedLabels
+      InstanceSigs
+      RoleAnnotations
+      NoMonomorphismRestriction
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-uni-patterns -Wincomplete-record-updates -Wredundant-constraints -fhide-source-paths -Wpartial-fields -Wmissing-deriving-strategies -fplugin GHC.TypeLits.Extra.Solver -fplugin GHC.TypeLits.KnownNat.Solver -fplugin GHC.TypeLits.Normalise
   build-depends:
-      base >=4.7 && <5
+      QuickCheck
+    , base >=4.7 && <5
     , bytestring
-    , catalyst
     , circuitry
+    , circus
+    , clash-prelude
     , containers
+    , generic-arbitrary
+    , ghc-typelits-extra
+    , ghc-typelits-knownnat
+    , ghc-typelits-natnormalise
     , hashable
     , mtl
+    , process
   default-language: Haskell2010
