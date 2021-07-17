@@ -20,10 +20,9 @@ In the same way that choosing three decimal digits allowed us to represent
 $10\times 10\times 10=1000$ different numbers, if we pick three wires to
 describe our binary number, we'll get $2\times 2\times 2=8$ numbers to play with.
 
-$\renewcommand{bin}[1]{#1\text{b}}$ Interestingly, we can write the equation
-$2\times 2\times 2=8$ as $\bin{10}\times\bin{10}\times\bin{10}=\bin{1000}$,
-which looks a lot like our original reasoning in the decimal number system. I
-wonder why that is?
+Interestingly, we can write the equation $2\times 2\times 2=8$ as [10](bin)
+\times [10](bin) \times [10](bin) = [1000](bin), which looks a lot like our
+original reasoning in the decimal number system. I wonder why that is?
 
 The wire count we choose to let us describe numbers is our machines is known as
 our **bit count**, and each of the wires respectively is known as a **bit**.

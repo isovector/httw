@@ -1,5 +1,3 @@
-$$\renewcommand{bin}[1]{#1\text{b}}$$
-
 ## Building Our Way Up
 
 In the previous chapters, we discussed how to break down what we had into more
@@ -133,23 +131,23 @@ symbol *for* the number ten. Similarly, in the binary system, we have two
 symbols, but no symbol *for* two.
 
 So as to not confuse anyone, we'll end any binary numbers we're working with
-with a final `b`. So the number $\bin{10}$ should be considered a binary number,
+with a final `b`. So the number [10](bin) should be considered a binary number,
 while the number $10$ is the usual ten that we know and love.
 
-Starting slowly, we'll look at the number $\bin{0}$, which is obviously the same
+Starting slowly, we'll look at the number [0](bin), which is obviously the same
 as our regular decimal $0$. Likewise, we still have a symbol to shuffle, so
-$\bin{1}=1$.
+[1](bin)=1.
 
 If we increase one to both sides, our decimal side easily goes up to $2$, but in
 binary, we've now run out of symbols, and so we need to steal a new one.
-Therefore $\bin{10}=2$. In the same way that a decimal number full of `9`s
+Therefore [10](bin)=2. In the same way that a decimal number full of `9`s
 switches to a `1` followed by the same number of `0`s when its increased, a
 binary number full of `1`s switches too!
 
 That decomposition of decimal numbers into their powers-of-ten trick that we saw
 earlier works equally well in binary land. For example:
 
-$$\bin{101101} = 1\times 2^5+0\times 2^4 + 1\times 2^3 + 1\times 2^2 + 0\times
+[101101](bin) $$= 1\times 2^5+0\times 2^4 + 1\times 2^3 + 1\times 2^2 + 0\times
 2^1 + 1\times 2^0 = 45$$
 
 Your powers-of-two likely aren't up to the same calibre as your powers-of-ten,
@@ -172,7 +170,7 @@ on numbers. Additionally, we'll build some new machines for doing useful things
 
 ## Exercises
 
-1) Convert the number $\bin{11111111}$ into its decimal representation.
+1) Convert the number [11111111](bin) into its decimal representation.
    Recalling what you know about how numbers "roll-over", is there an easier way
    of computing this?
 2) Change the decimal number $17$ into its binary representation.
