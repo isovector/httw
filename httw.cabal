@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 55bde20338574ac7fd4bb047c018bf141633b275f11d5a4dfede52d45150fc7c
+-- hash: 0a21fde5da1df9d40dc50913a9a1d5794e9a1db5416993329a282ac6f06404ba
 
 name:           httw
 version:        0.1.0.0
@@ -28,6 +28,9 @@ library
       Take2.Computer.ALU
       Take2.Computer.Bus
       Take2.Computer.CPU
+      Take2.Computer.CPU.Execute1
+      Take2.Computer.CPU.Execute2
+      Take2.Computer.CPU.Utils
       Take2.Computer.Examples
       Take2.Computer.Instruction
       Take2.Computer.Math

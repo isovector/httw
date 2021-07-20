@@ -12,7 +12,7 @@ import TruthTable
 
 
 __design
-    :: (SeparatePorts a, SeparatePorts b)
+    :: (SeparatePorts a, SeparatePorts b, Embed a, Embed b)
     => (String, [String], [(String, String)])
     -> String
     -> String

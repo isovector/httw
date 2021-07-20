@@ -1,5 +1,5 @@
-{-# LANGUAGE UndecidableInstances                 #-}
-{-# OPTIONS_GHC -fconstraint-solver-iterations=10 #-}
+{-# LANGUAGE UndecidableInstances                #-}
+{-# OPTIONS_GHC -fconstraint-solver-iterations=7 #-}
 
 module Take2.Computer.Register where
 

@@ -1,5 +1,5 @@
 RULES := pdf print
-CONTENT := book
+CONTENT := newbook
 IMAGES := $(addprefix build/,$(wildcard images/*.png))
 DESIGN_IMAGES := $(addprefix build/,$(wildcard .design-tools/*.png))
 
@@ -9,9 +9,10 @@ PANDOC_OPTS := --highlight-style theme/highlighting.theme \
                -F pandoc-crossref \
                -F pandoc-citeproc \
                --from markdown+fancy_lists \
-               --bibliography=prose/bib.bib \
                -s \
                --top-level-division=part
+
+               # --bibliography=prose/bib.bib \
 
 PANDOC_PDF_OPTS := --template format/tex/template.tex \
                    -t latex

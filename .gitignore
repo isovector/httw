@@ -5,3 +5,5 @@ book.tex
 *.toc
 *.thm
 .current-revision
+.design-tools/
+

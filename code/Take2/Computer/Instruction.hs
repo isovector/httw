@@ -1,5 +1,3 @@
-{-# LANGUAGE UndecidableInstances #-}
-
 module Take2.Computer.Instruction where
 
 import Prelude hiding ((.), id, sum)

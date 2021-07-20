@@ -1,45 +1,3 @@
-# How These Things Work: The Preface
-
-## Table of Contents
-
-### Part 1 -- Diagrams
-
-* [Preface](/book/preface)
-* [Machine Diagrams](/book/machine-diagrams)
-* [Universal Machines](/book/universal-machines)
-* [Interlude](/book/interlude)
-* [Numbers](/book/numbers)
-* [Arithmetic](/book/arithmetic)
-* [Abstraction](/book/abstraction)
-* [Multiplexing](/book/multiplexing)
-* [Latches](/book/latches)
-* [Constructions on Annotations](/book/constructions-on-annotations)
-* [Memory Cells](/book/memory)
-
-
-### Part 2 -- Symbolic Computations
-
-* [A New Foundation](/book/new-foundations)
-* [Symbolic Computation](/book/symbolic-computation)
-* [Symbolic Evaluation and Equational Reasoning](/book/evaluation)
-* [More Types](/book/more-types)
-* [Polymorphism](/book/polymorphism)
-* [Back in Business and Better than Ever](/book/back-in-business)
-* [The Infectiousness of Reality](/book/infectiousness-of-reality)
-* [Functions](/book/functions)
-* [Kleisli Categories](/book/kleisli-categories)
-* [Revisiting State](/book/revisiting-state)
-* [Kleisli Tools](/book/kleisli-tools)
-
-
-### Part 3
-
-* [Our First Computer](/book/our-first-computer)
-* [Tapes](/book/tapes)
-* [Operations](/book/operations)
-* [Tying It All Together](/book/tying-it-all-together)
-
-
 ## Preface
 
 The last decade of my life has been marked by acquiring knowledge around
@@ -98,7 +56,7 @@ simultaneously. There are two marvelous experiences here -- the amazement that
 such things can keep happening -- and, in the later chapters, the eventual
 understanding behind *why*.
 
-<img src="/images/httw/fractal.png" title="A fractal." />
+> TODO(sandy): image of a fractal
 
 Finally, I'd like to dedicate this book to my mum, whose thirst for knowledge
 has always inspired me, and to my father, who gave me this mindset in the first

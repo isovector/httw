@@ -2,12 +2,13 @@
 
 module Take2.Computer.Memory where
 
+import Data.Proxy
 import Prelude hiding ((.), id, sum)
 import Take2.Computer.Simple
 import Take2.Computer.Addressed
 import Circuitry.Machinery
 import Test.QuickCheck.Arbitrary.Generic (genericArbitrary, genericShrink)
-import Data.Typeable (Typeable)
+import Data.Typeable (Typeable, typeRep)
 
 
 hold :: Circuit Bool Bool
@@ -35,9 +36,9 @@ snap = component "snap"
 
 snapN
     :: forall a
-     . (Nameable a, OkCircuit a, SeparatePorts a)
+     . (OkCircuit a, SeparatePorts a, Typeable a)
     => Circuit (RW, a) (Vec (SizeOf a) Bool)
-snapN = component ("snap " <> nameOf @a)
+snapN = component ("snap " <> show (typeRep $ Proxy @a))
       $ second' serial
     >>> distribV
     >>> mapV snap
@@ -74,7 +75,7 @@ instance (KnownNat n, Arbitrary a) => Arbitrary (MemoryCommand n a) where
 
 
 unpackMemoryCommand
-    :: (Embed a, KnownNat n, SeparatePorts a, Typeable a)
+    :: (Embed a, KnownNat n, SeparatePorts a)
     => Circuit (MemoryCommand n a) ((Addr n, RW), a)
 unpackMemoryCommand
     = copy
