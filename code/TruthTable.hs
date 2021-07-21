@@ -8,16 +8,31 @@ import Data.Coerce (coerce)
 import Data.List (intercalate)
 import Data.Maybe (isJust, isNothing, fromJust)
 import GHC.Generics
-import GHC.TypeLits (type (<=))
 import Circuitry.Circuit
 import Circuitry.Embed
 import qualified Clash.Sized.Vector as V
+
+
+class CustomShow a where
+  customShow :: a -> String
+
+instance {-# OVERLAPPING #-} CustomShow Bool where
+  customShow True = "On"
+  customShow False = "Off"
+
+instance {-# OVERLAPPING #-} CustomShow a => CustomShow (Named nm a) where
+  customShow (Named a) = customShow a
+
+instance Show a => CustomShow a where
+  customShow = show
 
 
 class Enumerable a where
   enumerate :: [a]
   default enumerate :: (Generic a, GEnumerable (Rep a)) => [a]
   enumerate = fmap to genumerate
+
+deriving newtype instance Enumerable a => Enumerable (Named nm a)
 
 
 class GEnumerable f where
@@ -57,15 +72,13 @@ class SplitProduct a where
 instance {-# OVERLAPPING #-} (SplitProduct a, SplitProduct b) => SplitProduct (a, b) where
   splitProduct (a, b) = splitProduct a <> splitProduct b
 
-instance Show a => SplitProduct a where
-  splitProduct = pure . show
+instance CustomShow a => SplitProduct a where
+  splitProduct = pure . customShow
 
 
 truthTable
     :: forall a b
-     . ( Show a
-       , Show b
-       , Enumerable a
+     . ( Enumerable a
        , Embed a
        , Embed b
        , SplitProduct a
@@ -79,7 +92,7 @@ truthTable c = buildTable $ do
     let v = evalCircuitMV c (fmap Just $ embed a) 0
      in case (all isJust $ V.toList v, all isNothing $ V.toList v) of
           (True, _) -> splitProduct $ reify @b $ fmap fromJust v
-          (_, True) -> pure "high Z"
+          (_, True) -> "high Z" <$ (splitProduct $ reify @b $ V.repeat False)
           (_, _) -> error "circuit for truthTable isn't total"
 
 

@@ -1,3 +1,7 @@
+{-# LANGUAGE UndecidableInstances #-}
+
+{-# OPTIONS_GHC -fno-warn-unused-imports #-}
+
 module Design where
 
 import Data.Bool (bool)
@@ -48,9 +52,7 @@ __design (name, _, kvs) txt hash c = do
 
 
 truth
-    :: ( Show a
-       , Show b
-       , Enumerable a
+    :: ( Enumerable a
        , Embed a
        , Embed b
        , SplitProduct a

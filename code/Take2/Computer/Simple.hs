@@ -58,7 +58,7 @@ when
     => k
     -> Circuit v r
     -> Circuit (k, v) (Vec (SizeOf r) Bool)
-when k c = interface' diagrammed (fmap (mappend "case ") $ constantName k)
+when k c = interface' (mkPort "i") (mkPort "o") diagrammed (fmap (mappend "case ") $ constantName k)
            (first' (intro k >>> eq))
        >>> ifOrEmpty c
 
@@ -67,7 +67,7 @@ when'
     => k
     -> Circuit (Bool, v) r
     -> Circuit (k, v) (Vec (SizeOf r) Bool)
-when' k c = interface' diagrammed (fmap (mappend "case ") $ constantName k)
+when' k c = interface' (mkPort "i") (mkPort "o") diagrammed (fmap (mappend "case ") $ constantName k)
            (first' (intro k >>> eq))
        >>> c
        >>> serial
