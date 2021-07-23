@@ -323,28 +323,82 @@ are just really big circuits that determine which outputs should be `on` or
 `off`. We will encounter one more necessary construction --- the *tri-state
 buffer* --- in @sec:buffers, but we'll cross that bridge when we come to it.
 
----
 
-> TODO(sandy): something about monoids here
+### Associativity
 
-For example, we might want to connect
-two `and` gates sequentially. Notice that there are several different ways this
-can be accomplished; any two inputs can be chosen to be `and`ed first, with the
-remaining port being combined with the result of the first `and` gate. Figures
-@fig:andandl and @fig:andandr show two of the three possibilities.
+Let's return to my lamp, with its wall switch and pull chain switch. We
+represented whether or not the light was on by taking the `and` of the two
+switches. But these are not the only relevant factors; there is also a fuse or
+breaker in the house which dictates whether electricity is even getting to the
+outlet. Another `and` gate is necessary:
 
-```{#fig:andandl design=code/Design.hs label="And/And L"}
-first' andGate >>> andGate
+```{#fig:breaker design=code/Design.hs label="A fused system"}
+unsafeReinterpret @((Named "Breaker" Bool, Named "Wall" Bool), Named "Switch" Bool) >>> first' andGate >>> andGate
 ```
 
-```{#fig:andandr design=code/Design.hs label="And/And R"}
-second' andGate >>> andGate
+The wire connecting the two `and` gates corresponds to whether the outlet has
+power to give to the lamp. If it doesn't, the switch on the lamp itself is moot
+--- even if the lamp wanted power, it's not going to get any, and thus the lamp
+is off regardless. This is a perfectly reasonable interpretation of the system.
+But equally reasonable is an alternative diagram:
+
+```{#fig:breaker2 design=code/Design.hs label="Another fused system"}
+unsafeReinterpret @(Named "Breaker" Bool, (Named "Wall" Bool, Named "Switch" Bool)) >>> second' andGate >>> andGate
 ```
 
-The immediate question is whether to prefer one choice over another. Take a
-moment to ponder the question. Another way of phrasing it is "are the two
-circuits equivalent?" As it happens, they are. Rather than work out both
-function tables, we can instead reason more intuitively. The first thing to note
-is that the `and` gate is *symmetric;* switching the order of its inputs doesn't
-affect its output.
+Here, the order of the `and` gates has been swapped. While @fig:breaker better
+describes the physical flow of electricity, @fig:breaker2 more closely tracks
+how we'd go about troubleshooting the lamp being off. If the lamp is off, we'd
+first check that both switches are on, and only then would we check the breaker
+box.
+
+We are left with a dilemma: both @fig:breaker and @fig:breaker2 are reasonable
+descriptions of the problem --- but which one is *correct*? Careful construction
+of the function tables for each shows that it *doesn't matter* which we choose.
+Both function tables look like this:
+
+```{#fig:breaker_truth design=code/Design.hs fn=truth label="A fused system"}
+unsafeReinterpret @((Named "Breaker" Bool, Named "Wall" Bool), Named "Switch" Bool) >>> first' andGate >>> andGate
+```
+
+Appealing to the function tables is certainly a strong *logical argument,* but
+machines quickly become too complicated to reason about by building their
+tables. Instead, we can also reason about this circuit *intuitively.* Remember
+that machines are made in order to be meaningful to humans, so it is desirable
+for us to understand systems like these without relying on rote analysis. Asking
+whether my lamp currently emits light is the same as asking whether every
+relevant switch is `on`.  It doesn't matter in which order you look, or how you
+divvy up the work; either all switches are `on`, or at least one is `off`.
+
+This idea that the exact divvying-up doesn't matter should be familiar to you
+from primary school. We are all fine tallying up our restaurant receipt as $5.50
++ 12.12 + 8.47$ without worrying about the minutiae of where exactly the
+parentheses should go (is it $(5.50 + 12.12) + 8.47$ or $5.50 + (12.12 +
+8.47)$?)
+
+Similarly, we could write out our circuit as `switch & wall & breaker` without
+worrying exactly where the parentheses should go. This property is called
+*associativity.*
+
+But this technique doesn't work for all machines. The vast majority we encounter
+will *not* be associative, so care must be taken. There is an analogous
+situation in arithmetic; while addition is associative, subtraction is most
+certainly not. Try it for yourself!
+
+Because `and` gates are associative, we can play a little fast-and-loose with
+our notation. Often, it's convenient to assume an `and` gate can take an
+arbitrary number of input wires. This isn't true when you're physically
+assembling a circuit, but because of associativity, the exact details of the
+layout can't matter, and so the meaning is unambiguous to any technician in the
+field.
+
+```{#fig:bigand design=code/Design.hs label="Notational convenience"}
+unsafeReinterpret @((Named "Breaker" Bool, Named "Wall" Bool), Named "Switch" Bool) >>> bigAndGate
+```
+
+The machine in @fig:bigand is completely identical to that in @fig:breaker (and
+@fig:breaker2.) The darker wire labeled `/3/` indicates that it is actually just
+three wires drawn together (but remaining separate in reality.) As you will see,
+it is often very convenient to move large collections of wires around, because
+our machines are quickly going to become very, *very* large.
 

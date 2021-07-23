@@ -11,6 +11,7 @@ import Data.Maybe (fromMaybe, isJust)
 import Prelude hiding ((.), id)
 import System.Process (callProcess)
 import Circuitry.Machinery
+import Take2.Computer.Simple
 import Circuitry.Instances
 import TruthTable
 
