@@ -402,3 +402,113 @@ three wires drawn together (but remaining separate in reality.) As you will see,
 it is often very convenient to move large collections of wires around, because
 our machines are quickly going to become very, *very* large.
 
+
+### Universality
+
+> "Perfection is achieved when there is nothing left to take away."
+>
+> -- Antoine de Saint-Exupéry
+
+One particularly important rule of design is that the result should be
+*elegant.* The word is intentionally left undefined, with the tacit
+understanding that you'll know it when you see it. Nevertheless, one common
+feature of an elegant design is *parsimony* --- using exactly what you need to,
+and nothing more.
+
+I claim is that all machines can be built out of intricate combinations of
+`not`, `and`, and `or` gates. Thus, we call these three gates a *universal set.*
+But as we have seen, we can build `or` using only `not` and `and`. Similarly, we
+can build `and` out of `not` and `or`. In some sense, this shows that neither
+`and` nor `or` is *more fundamental* than the other --- at best, they are
+equally so. But there something deeper still.
+
+The `nand` gate is what happens when we put a `not` after an `and`:
+
+```{#fig:nand_expand design=code/Design.hs label="nand"}
+andGate >>> notGate
+```
+
+with the function table:
+
+```{#fig:nand_expand_truth design=code/Design.hs fn=truth label="nand truth"}
+andGate >>> notGate
+```
+
+This machine is so popular that it too gets its own symbol, somewhat of a
+cross-breed between the iconographs of its constituent machines --- combining
+the shape of the `and` gate with the circle of the `not`:
+
+```{#fig:nand design=code/Design.hs label="nand"}
+nandGate
+```
+
+The `nand` gate is near and dear to computer engineers' hearts; it can be used
+to reconstruct all of the other "primitive" gates. It forms a universal set by
+itself! For example, by using the same wire as both inputs, we can derive a
+`not` gate:
+
+```{#fig:not_from_nand design=code/Design.hs label="not from nand"}
+copy >>> nandGate
+```
+
+Once we have a `not` gate, we can connect it to the output of `nand`, in order
+to make a "not `nand`" gate --- that is, an `and`:
+
+```{#fig:and_from_nand design=code/Design.hs label="and from nand"}
+nandGate >>> copy >>> nandGate
+```
+
+And finally, we can construct an `or` gate from `and` and `not` like before:
+
+```{#fig:or_from_nand design=code/Design.hs label="or from nand"}
+both (copy >>> nandGate) >>> nandGate
+```
+
+All machines can be made from `and`, `or`, and `not`. And *those* three
+machines can be built from `nand` gates, therefore we must conclude that all
+machines can be made from only `nand` gates.
+
+Building machines out of nothing but `nand` gates is conceptually more elegant
+than building them from `and`s and `not`s --- though it is likely much less
+pragmatic! Humans think more naturally in terms of `and`s and `or`s than they do
+in terms of `nand`s, and recall, systems are tools for expressing human thought.
+By what virtue then can we say that `nand` is more elegant? By virtue that it is
+easier to manufacture only one fundamental building block than it is two.
+
+It is a too-real truth that humans are capable of mistakes. Those mistakes might
+come in any number of forms: saying the wrong thing to your spouse, having an
+awkward encounter with a coworker, accidentally stapling your finger to “just
+see what would happen,” and so on. But the most egregious mistake of all is to
+base an argument on shaky grounds.
+
+And make no mistake, this theory of computer science we've been building here is
+nothing more than an argument. It's an argument to the universe, that things
+must be this way because there is no other possible way for them to be. And it's
+a particularly convincing argument, because all of this stuff actually works.
+
+But all arguments must rest on some assumptions, and in human affairs, it's
+often in these assumptions where things go wrong. Rhetoric can be perfectly well
+argued, but rest on a poor foundation, and because of that, despite its internal
+structure, it is ultimately wrong.
+
+Parsimony is thus our hedge against ourselves. We realize that we humans are
+fallible, and, as a defense, we attempt to rest our arguments on as few external
+factors as we can. The fewer assumptions we make, the more likely our
+well-reasoned argument is to be right.
+
+> TODO(sandy): Nothing about computers rests on the fact that it uses
+> electricity
+
+All of this is to say, it's half as much work to build a `nand` machine and
+convince yourself it works, as it is to build both an `and` and a `not` and
+convince yourself of those. The thing about electronics is that they need to be
+manufactured before we can use them. And if they're going to be manufactured,
+that means someone needs to manufacture each and every piece we need. Parsimony
+is then a limit on how much money we need to pay people to manufacture different
+parts for us. We can either pay two factories to build us `and` and `not` gates,
+or just one to build us `nand` gates, and assemble the rest ourselves.
+
+The latter might be more work, but there are fewer things that can go wrong. In
+theoretical endeavors, always aim for parsimony. It will save you money and,
+more importantly, time spent being wrong.
+
