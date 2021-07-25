@@ -159,7 +159,7 @@ $$
 which we can then write out in an alternative form:
 
 $$
-6258 = 6 \times 10^3 + 2 \times 10^2 + 5 \times 10^1 + 8 \times 10^0
+6258 = (6 \times 10^3) + (2 \times 10^2) + (5 \times 10^1) + (8 \times 10^0)
 $$
 
 If you don't like math and the exponents make you unhappy, don't fret, we're not
@@ -167,6 +167,27 @@ going to do much more with them. Intuitively, this says that the rightmost
 symbol describes how many *ones* your number has; the next-to-rightmost
 describes how many *tens* your number has. And so on, until you run out of
 symbols.
+
+This same technique works in binary. As a shorthand, we can write [1101](binary)
+to correspond to the sequence `on on off on`, and decompose this number in the
+same way:
+
+$$
+[1101](binary) = (1 \times 2^3) + (1 \times 2^2) + (0 \times 2^1) + (1 \times 2^0)
+$$
+
+which can be simplified to:
+
+$$
+[1101](binary) = 8 + 4 + 1 = 13
+$$
+
+> TODO(sandy): describe how we will use WORDS to talk about numbers themselves,
+> and the digits for the encoding in this section
+
+Thus, the binary number [1101](binary) is an encoding of the number thirteen,
+just like the decimal number 13 is. It's exactly the same number, just in
+different pants.
 
 
 
