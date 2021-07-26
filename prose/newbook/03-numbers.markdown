@@ -484,8 +484,8 @@ But another way of thinking about bits is as a choice between two options. In
 the case of numbers, that choice was between 0 or 1. But perhaps in the context
 of a Robert Frost poem, `off` might mean to follow one path, while `on` would be
 to take the road less traveled by. Of particular importance to this section, we can
-choose `off` to mean *a positive number,* and `on` to mean *a negative
-number[^or-zero].*
+choose `off` to mean *a positive number[^or-zero],* and `on` to mean *a negative
+number.*
 
 [^or-zero]: Or zero.
 
