@@ -297,7 +297,7 @@ Having worked through the addition algorithm thoroughly, we're now ready to
 build a machine capable of performing sums.
 
 
-### The Ripple-Carry Adder
+### The Full Adder
 
 We'd like to build a machine that can perform automatic addition, by mindlessly
 shuffling symbols like we did in the previous section. Constructing such a
@@ -390,4 +390,111 @@ us if both were `on`. If any one of these `and` gates was `on`, the result of
 ```{#fig:cout design=code/Design.hs label="carry"}
 cout
 ```
+
+
+### Endianness and the Ripple Carry Adder
+
+> TODO(sandy): no discussion of endianness
+
+The full adder machine corresponds to adding together a single column of binary
+digits. We can build a fully-operational, multiple-digit adding machine simply
+by connecting several full adders together. The trick is to chain one machine's
+`Cout` output to the next's `Cin` input. For the first `Cin` in the chain, we
+connect a wire that is always `off`.
+
+In the resulting diagram, this leads to a cascade of full adders, where the
+carry "ripples" from one machine to the next. Thus, the machine in @fig:ripple4
+is called the *ripple carry adder.*
+
+```{#fig:ripple4 design=code/Design.hs depth=1 label="Ripple Carry Adder"}
+unsafeReinterpret @(Named "A" Word4, Named "B" Word4) >>> addN @Word4 >>> unsafeReinterpret @_ @(Named "A+B" Word4, Named "Cout" Bool)
+```
+
+Recall from @fig:bigand the notational convenience of the thick vertical bar,
+called a *split.* In the `A` case, to the left of this split is a wire labeled
+`/4/`, and to the right are four wires, numbered 0 through 3. The `/4/` wire
+called a *ribbon* or a *bundle* of wires, and it is a short-hand form of saying
+"here are four wires, all moving together."
+
+The split exists to separate this bundle for when we eventually do want to
+connect the individual wires of the ribbon to different places. To the right of
+the split are four wires, each individually labeled.  In the case of
+@fig:ripple4, the wire labeled `0` is connected to the `A` input of the first
+`full adder` machine, while the wire labeled `1` is connected to the second
+`full adder`.
+
+Similarly, there is a thick vertical bar on the output `A+B`. This one is called a
+*join,* because it takes separate wires and re-bundles them.
+
+In @fig:ripple4, the inputs `A`, `B` and the output `A+B` are all ribbons of
+four wires. The size of this ribbon is known as a computer's *word size,* and
+thus in @fig:ripple4 we have a word size of four. Why this number? No reason ---
+it was chosen arbitrarily. It's big enough to see the "carry cascade," but still
+small enough to comfortably fit on a page.  However, in a real machine, there
+are pragmatic considerations for the size of your wire bundles.
+
+While there is an infinite amount of numbers, there is a biggest number that you
+can write on any particular sheet of paper --- namely, as many 9s as can fit in
+your smallest, most-precise handwriting. If you want to a bigger number, you'll
+need to go buy a bigger sheet of paper.
+
+The ribbon sizes of the full adder analogously limit the biggest number that can
+be represented. Recall that each wire is either `on` or `off`, which we
+interpret as [1](binary) or [0](binary). By placing these wires beside one
+another, it is as if we are using each as a digits' column. So, with a ribbon of
+four wires, the biggest number we can encode is $[15](binary) = 15 = 2^4 - 1$.
+Why is that $- 1$ there? Because we need to be able to encode 0 as well! So
+there are indeed $2^4$ different numbers we can encode, with the largest being
+$2^4 - 1$.
+
+We can choose a word size arbitrarily, but it comes with a trade-off. By
+choosing a larger word size, we are able to represent significantly bigger
+numbers, at the cost of, well, cost. Because we need to build a `full adder` for
+each wire in the word, the cost of manufacturing this circuit will go up as the
+word size does, as will the physical size of the circuit. Today's computers have
+a word size of 64, which is why they are called "64-bit computers."
+
+> TODO(sandy): what's a bit?
+
+The split and join bars are essential for understanding any machine with a large
+word size. Conceptually, the word is a single conceptual entity, made up of
+several wires --- much like how we usually think of our hand as a single whole,
+rather than as a thumb and four fingers. That's not to say we *never* think
+about our fingers, but rather that we need only do it when the concept of "hand"
+isn't sufficiently precise.
+
+To *sum* up this section, we can introduce a new symbol for working with ripple
+carry adders of any word size. You will find yourself familiar with the
+iconography in @fig:ripple4_sym, which is a desirable feature when designing
+large systems.
+
+```{#fig:ripple4_sym design=code/Design.hs label="Ripple Carry Adder"}
+unsafeReinterpret @(Named "A" Word4, Named "B" Word4) >>> addN @Word4 >>> unsafeReinterpret @_ @(Named "A+B" Word4, Named "Cout" Bool)
+```
+
+
+### Negative Numbers and Subtraction
+
+A large portion of computer science is learning how to *represent* data out of
+bits. In this chapter we have looked at how to represent positive integers by
+treating a sequence of bits as digits of a binary number. As we have seen, we
+can consider each bit of `on` or `off` as a 1 or a 0.
+
+But another way of thinking about bits is as a choice between two options. In
+the case of numbers, that choice was between 0 or 1. But perhaps in the context
+of a Robert Frost poem, `off` might mean to follow one path, while `on` would be
+to take the road less traveled by. Of particular importance to this section, we can
+choose `off` to mean *a positive number,* and `on` to mean *a negative
+number[^or-zero].*
+
+[^or-zero]: Or zero.
+
+The most obvious way to be able to encode negative numbers alongside positive
+ones is to attach an extra wire, whose job it is to track whether or not the
+number is negative. For example, [19](1s) would encode 19, while [-19](1s) would
+encode $-19$. This system works, except that it has a fatal flaw --- namely,
+that there are two different ways of encoding one particular number (what is
+it?) As a result, not only do we "waste" one of the precious numbers that are
+representable by our word size, we also run into mathematical difficulties.
+
 
