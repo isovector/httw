@@ -139,7 +139,7 @@ understanding required.
 a machine.
 
 
-### The Symbol Shuffling of Addition
+### Encoding Binary Numbers
 
 While in our everyday decimal system we have ten distinct digits, in our machine
 diagrams we have only two: `off` and `on`. Thus, we will build a *binary* number
@@ -168,95 +168,226 @@ symbol describes how many *ones* your number has; the next-to-rightmost
 describes how many *tens* your number has. And so on, until you run out of
 symbols.
 
-This same technique works in binary. As a shorthand, we can write [1101](binary)
+This same technique works in binary. As a shorthand, we can write [13](binary)
 to correspond to the sequence `on on off on`, and decompose this number in the
 same way:
 
 $$
-[1101](binary) = (1 \times 2^3) + (1 \times 2^2) + (0 \times 2^1) + (1 \times 2^0)
+[13](binary) = (1 \times 2^3) + (1 \times 2^2) + (0 \times 2^1) + (1 \times 2^0)
 $$
 
 which can be simplified to:
 
 $$
-[1101](binary) = 8 + 4 + 1 = 13
+[13](binary) = 8 + 4 + 1 = 13
 $$
 
 > TODO(sandy): describe how we will use WORDS to talk about numbers themselves,
 > and the digits for the encoding in this section
 
-Thus, the binary number [1101](binary) is an encoding of the number thirteen,
+Thus, the binary number [13](binary) is an encoding of the number thirteen,
 just like the decimal number 13 is. It's exactly the same number, just in
 different pants.
 
+Going the other direction --- encoding a decimal number as a binary one ---
+requires a little more calculation, but is fundamentally the same process. The
+idea is to find the largest power-of-two that is smaller than your current
+number, and subtract it. Add a 1 to the beginning of the binary encoding. Then,
+for each subsequently smaller power of two, see if it can be subtracted from
+your running total. If so, subtract it and push a 1 onto your binary encoding;
+if not, just attach a 0. Repeat until you've run out of powers of two.
+
+To illustrate this, consider the binary encoding of 49. The largest power of two
+smaller than this is 32 --- thus there should be a 1 in the "thirty-seconds'
+place" of our binary-encoded number. We subtract 32 from 49, and continue:
+
+$$
+49 - 32 = 17
+$$
+
+The greatest power of two less than 32 is 16, which can also be subtracted from
+17. Thus, there is also a 1 in the "sixteenths' place:"
+
+$$
+17 - 16 = 1
+$$
+
+Iterating through the remaining powers of two, we find 8, then 4, then 2. Each
+of these is bigger than our running total of 1, so nothing happens, and we put a
+0 in the eights', fourths' and twos' place of our binary number.
+
+Finally, we get to the ones' column[^power-of-two], and we can subtract it from
+the total, so our last place is a 1.
+
+[^power-of-two]: One, perhaps surprisingly, is a power of two: $2^0 = 1$
+
+There is no more work to do. Our binary-encoded number can now be read off as
+[49](binary).
 
 
+### The Symbol Shuffling of Addition
+
+As mentioned in the previous section, the importance of the Arabic numeral
+system is how easy it makes arithmetic. Consider the calculation of
+$2477+3426$. There is a grade-school algorithm for performing this sum which you
+are certainly familiar with. Starting from the rightmost column, add the two
+digits, and write down the result in the bottom row. If the number was bigger
+than ten, write only its ones' column in the bottom row, and "carry" the
+tens' digit to the next column. Move left a column, and repeat until there are
+no more columns.
+
+The table resulting from such a calculation might look like this, where the row
+labeled `C` is the "carry" row.
+
+|   |   |   |   |   |
+|---|---|---|---|---|
+| C |   | 1 | 1 |   |
+|   | 2 | 4 | 7 | 7 |
+| + | 3 | 4 | 2 | 6 |
+| = | 5 | 9 | 0 | 3 |
+
+The power of this technique is that breaks down a hard problem (add two four
+digit numbers together) into several easier problems (add two one digit numbers
+together $\times$ 4.) By compelling children to memorize their one-digit
+addition tables, each of the easier sub-problems becomes trivial. The result:
+given sufficient time and motivation, arbitrarily large numbers can be added "by
+hand" with little probability of error.
+
+Addition in this manner is an example of a *divide and conquer* algorithm.
+Rather than solve a hard problem directly, instead, break it down into easier
+problems, solve those, and then combine their answers. We will see divide and
+conquer solutions time and time again, as they are a fantastic way of dealing
+with highly-complicated problems.
+
+As you might expect, the grade-school addition technique works just fine for
+binary numbers as well as it does for decimal numbers. The one-digit addition
+table looks like this:
+
+|   |   |   |
+|---|---|---|
+| + | 0 | 1 |
+| 0 | 0 | 1 |
+| 1 | 1 | 10 |
+
+where the only case in which we have a carry is $[1](binary) + [1](binary) =
+[2](binary)$. For example:
+
+|   |   |   |   |    |
+|---|---|---|---|----|
+| C |   | 1 | 1 |    |
+|   | 1 | 0 | 0 | [1](binary) |
+| + | 0 | 0 | 1 | [1](binary) |
+| = | 1 | 1 | 0 | [0](binary) |
+
+Thus, $[9](binary) + [3](binary) = [12](binary)$. Take a moment to decode all
+three numbers into their decimal form to confirm that the sum is correct. This
+result should be particularly amazing --- you just added two numbers *purely
+symbolically,* without having any idea what numbers they *actually were!* And
+so we can see that this algorithm correctly adds two numbers, without having any
+understanding of "what" "numbers" "are." We merely shuffled symbols around
+according to some fixed rules.
+
+Pay close attention to the second and third column in the above table --- the
+columns with "carries." In those columns, we actually needed to add *three*
+one-digit numbers --- the two digits from the numbers we're adding, and one
+digit from the carry of the previous column. In columns one and four, the carry
+was implicitly 0.
+
+Having worked through the addition algorithm thoroughly, we're now ready to
+build a machine capable of performing sums.
 
 
-## The Binary System
+### The Ripple-Carry Adder
 
-I'll bet you can see where we're going with all of this. Since a wire can be
-either hot or cold, which can think of it as having two different symbols. If we
-stack a bunch of wires beside one another, we can decide on a convention for
-which one is the biggest, and then replace all of the "tens" in our argument
-above with "twos".
+We'd like to build a machine that can perform automatic addition, by mindlessly
+shuffling symbols like we did in the previous section. Constructing such a
+machine is equivalent to "translating" the grade-school addition algorithm into
+the language of `and`, `or` and `not` gates.
 
-The resulting system we get out of all of this work is known as the **binary
-system**. I'm sure you've heard of it.
+Rather than tackle the full problem of addition in one go, let's first solve a
+simpler problem and ignore the carry-in, assuming it will always be 0. This is a
+circuit with a special name, the so-called "half adder." At a high level, it
+looks like @fig:bb_halfadder.
 
-To really whet your whistle for these things, let's go through a few examples
-for deciphering a number *represented in the binary system* into one you'd be
-more familiar with, *represented in the decimal system*.
+```{#fig:bb_halfadder design=code/Design.hs label="Half Adder"}
+let { c :: Circuit (Named "A" Bool, Named "B" Bool) (Named "A+B" Bool, Named "Cout" Bool); c = copy >>> (component "sum1" (fst' >>> unsafeReinterpret) *** component "carry1" (fst' >>> unsafeReinterpret)) } in c
+```
 
-Remember that in the decimal system, even though we had ten symbols, we had no
-symbol *for* the number ten. Similarly, in the binary system, we have two
-symbols, but no symbol *for* two.
+All that's now is to determine what's inside the `sum1` and `carry1` boxes.
+Carrying is easy. We are adding two one-digit numbers, and need to carry
+whenever the twos' column has been filled. This is only the case when `A` and
+`B` are both [1](binary), which is to say `on`. Thus, `carry1` is just an `and`
+gate.
 
-So as to not confuse anyone, we'll end any binary numbers we're working with
-with a final `b`. So the number [10](bin) should be considered a binary number,
-while the number $10$ is the usual ten that we know and love.
+```{#fig:carry1 design=code/Design.hs label="carry1"}
+andGate
+```
 
-Starting slowly, we'll look at the number [0](bin), which is obviously the same
-as our regular decimal $0$. Likewise, we still have a symbol to shuffle, so
-[1](bin)=1.
+Building `sum1` is a little harder. The ones' digit should be set when exactly
+one of the inputs is `on`. Take a moment to convince yourself of the truth of
+this; if both are `off`, then the result should also be off. When they're both
+`on`, the result is 2, which in binary is [2](binary), and again the ones'
+column is 0.
 
-If we increase one to both sides, our decimal side easily goes up to $2$, but in
-binary, we've now run out of symbols, and so we need to steal a new one.
-Therefore [10](bin)=2. In the same way that a decimal number full of `9`s
-switches to a `1` followed by the same number of `0`s when its increased, a
-binary number full of `1`s switches too!
+So `sum1` is `on` when exactly one of the inputs is `on`. Which means it's on
+whenever (`A` is on *and* `B` is not) *or* whenever (`A` is off *and* `B` is
+on). Expressed in this way, constructing the circuit is straightforward as in
+@fig:sum1.
 
-That decomposition of decimal numbers into their powers-of-ten trick that we saw
-earlier works equally well in binary land. For example:
+```{#fig:sum1 design=code/Design.hs label="sum1"}
+copy >>> first' notGate *** second' notGate >>> both andGate >>> orGate
+```
 
-[101101](bin) $$= 1\times 2^5+0\times 2^4 + 1\times 2^3 + 1\times 2^2 + 0\times
-2^1 + 1\times 2^0 = 45$$
+A different way of thinking about `sum1` is that it's `on` whenever its inputs
+are different from one another. This happens to be a common problem in
+circuitry, and as such, `sum1` has its own name and symbol. It's more commonly
+called a `xor` gate, which is short for "exclusive or" --- meaning one, or the
+other, *but not both.* It is this final condition that differentiates `xor` from
+`or`, which will happily accept both inputs being `on`. We draw `xor` with the
+unique symbol shown in @fig:xor.
 
-Your powers-of-two likely aren't up to the same calibre as your powers-of-ten,
-but you have to admit, this method is much easier than trying to count all the
-way up from 0.
+```{#fig:xor design=code/Design.hs label="xor"}
+xorGate
+```
 
-And so that's it! We've come up with a scheme for representing numbers in terms
-of the building blocks we had, namely wires! This is the beginning of a trend.
-As we'll see more and more, wires are, in fact, useful. We use them to describe
-*things that are*, while we use machines to describe *how things change*, by way
-of function tables. In this sense, our wires are "nouns", and our machines are
-"verbs".
+Putting everything together, we can now give the full circuit for `half adder`
+as in @fig:halfadder.
 
-In the next chapter we'll look at putting these numbers directly into our
-diagrams, and reinterpret some of our existing machines in terms of how they act
-on numbers. Additionally, we'll build some new machines for doing useful things
-*with* numbers.
+```{#fig:halfadder design=code/Design.hs label="Half Adder"}
+let { c :: Circuit (Named "A" Bool, Named "B" Bool) (Named "A+B" Bool, Named "Cout" Bool); c = unsafeReinterpret >>> copy >>> xorGate *** andGate >>> unsafeReinterpret} in c
+```
 
----
+As you can see, circuits which feel overwhelming can always be broken into
+smaller parts, solved independently, and recombined. The result is often
+surprisingly elegant, like in @fig:halfadder. It's the *divide and conquer*
+principle at work again.
 
-## Exercises
+Of course, what we really want is a *full adder* --- one capable of dealing with
+carry-in inputs as well. At a high-level, the design looks like
+@fig:bb_fulladder, which is analogous to the half adder, but has an additional
+carry-in input.
 
-1) Convert the number [11111111](bin) into its decimal representation.
-   Recalling what you know about how numbers "roll-over", is there an easier way
-   of computing this?
-2) Change the decimal number $17$ into its binary representation.
-3) Come up with a general strategy for changing decimal numbers into their
-   binary equivalents. Hint: Start from the left, and try to find the biggest
-   power-of-two that you can pull out of it.
+```{#fig:bb_fulladder design=code/Design.hs label="Full Adder"}
+let { c :: Circuit (Named "A" Bool, (Named "B" Bool, Named "Cin" Bool)) (Named "A+B" Bool, Named "Cout" Bool); c = copy >>> (component "sum" (serial >>> unconsC >>> fst' >>> unsafeReinterpret) *** component "carry" (serial >>> unconsC >>> fst' >>> unsafeReinterpret)) } in c
+```
+
+In the full adder, `sum` is an easier sub-circuit to build, so let's start
+there. Like in the half adder, we want to output a 1 whenever an odd number of
+inputs are `on`. But this is equivalent to adding two of them via `sum1`, and
+then adding the third to the result of that. And so `sum` is just two `xor`
+gates to combine the three inputs.
+
+```{#fig:sum design=code/Design.hs label="carry"}
+sum
+```
+
+Determining when to carry is a little harder. We need to carry whenever two or
+three of the inputs are `on`. If we take every pair of input wires (`A/B`,
+`A/Cin` and `B/Cin`), we can run each pair through an `and` --- this will tell
+us if both were `on`. If any one of these `and` gates was `on`, the result of
+`cout` should also be `on` --- so we can combine them together with `or` gates.
+
+```{#fig:cout design=code/Design.hs label="carry"}
+cout
+```
 

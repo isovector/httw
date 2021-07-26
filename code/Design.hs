@@ -8,10 +8,11 @@ import Data.Bool (bool)
 import Data.Char (isAlphaNum)
 import Data.List (group)
 import Data.Maybe (fromMaybe, isJust)
-import Prelude hiding ((.), id)
+import Prelude hiding ((.), id, sum)
 import System.Process (callProcess)
 import Circuitry.Machinery
 import Take2.Computer.Simple
+import Take2.Computer.Math
 import Circuitry.Instances
 import TruthTable
 

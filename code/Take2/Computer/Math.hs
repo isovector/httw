@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-redundant-constraints #-}
+
 module Take2.Computer.Math where
 
 import           Prelude hiding ((.), id, sum)
@@ -16,9 +18,8 @@ everyPair = (reassoc >>> fst')
 cout :: Circuit (Bool, (Bool, Bool)) Bool
 cout = everyPair
    >>> andGate *** (andGate *** andGate)
-   >>> ((reassoc >>> fst') &&& snd')
-   >>> orGate *** orGate
-   >>> orGate
+   >>> serial
+   >>> bigOrGate
 
 
 sum :: Circuit (Bool, (Bool, Bool)) Bool
