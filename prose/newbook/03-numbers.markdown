@@ -392,7 +392,7 @@ cout
 ```
 
 
-### Endianness and the Ripple Carry Adder
+### Endianness and the Ripple Carry Adder  {#sec:adder}
 
 > TODO(sandy): no discussion of endianness
 
@@ -497,4 +497,88 @@ that there are two different ways of encoding one particular number (what is
 it?) As a result, not only do we "waste" one of the precious numbers that are
 representable by our word size, we also run into mathematical difficulties.
 
+A good encoding of negative numbers would observe the grade-school equality that
+$a - b = a + (-b)$ --- namely, that we can perform subtraction by adding a
+negative. This is desirable, because we went through all the effort of building
+an adding machine in @sec:adder. It would be nice to be able to reuse it.
+
+The trick here is to realize that, given a word size of $n$, the largest number
+we can represent is $2^{n - 1}$. For example, with a word length of 4, the
+biggest number we can represent is $[15](binary) = 2^4 - 1 = 15$. If we add
+one to this, we get $[16](binary)$, but there is no wire to put the 1 digit on!
+And so it silently gets carried away, leaving us with [0](binary-4). This is
+known as an *overflow,* and occurs when the result of a sum is bigger than our
+word size can hold.
+
+Overflowing is how time works on an analog clock. If the clock reads 11, an hour
+later it will read 12, and an hour after it will read 1. The clock has
+overflowed!
+
+We can exploit overflow in order to make subtraction work. Think about what
+happens when you add 9 to a one digit number:
+
+| | +9 | After Overflow |
+|:-:|:-:|:--|
+| 0 | 9 | 9 |
+| 1 | 10 | 0 |
+| 2 | 11 | 1 |
+| 3 | 12 | 2 |
+| 4 | 13 | 3 |
+| 5 | 14 | 4 |
+| 6 | 15 | 5 |
+| 7 | 16 | 6 |
+| 8 | 17 | 7 |
+| 9 | 18 | 8 |
+
+Comparing the first column to the third, it's clear that, after overflow, adding
+9 is equivalent to subtracting 1. A similar pattern occurs when we add 8, except
+that this time it's the same as subtracting 2:
+
+| | +8 | After Overflow |
+|:-:|:-:|:--|
+| 0 | 8 | 8 |
+| 1 | 9 | 9 |
+| 2 | 10 | 0 |
+| 3 | 11 | 1 |
+| 4 | 12 | 2 |
+| 5 | 13 | 3 |
+| 6 | 14 | 4 |
+| 7 | 15 | 5 |
+| 8 | 16 | 6 |
+| 9 | 17 | 7 |
+
+If we only had ten digits to play with, we could assign a mapping between our
+digits and numbers that looks like this:
+
+| Digit | Number |
+|:-:|:-:|
+| 0 | 0 |
+| 1 | 1 |
+| 2 | 2 |
+| 3 | 3 |
+| 4 | 4 |
+| 5 | -5 |
+| 6 | -4 |
+| 7 | -3 |
+| 8 | -2 |
+| 9 | -1 |
+
+Here we've split half our digits into positive numbers, and half into negative
+numbers. The positive digits map to the same numbers, but 5 maps to $-5$ and
+they start counting back up from there. This system is peculiar at first blush,
+but as we will see, corresponds closely with our notions of how addition and
+subtraction should work.
+
+The idea is that to do arithmetic here, we reason in terms of the "number"
+column, but add in terms of the "digit" column. As we'd expect, the usual laws
+of addition work: $2 + 2 = 4$. But under our mapping above, we also get that $4
+- 5 = -1$, by rewriting $-5$ and $-1$ as $5$ and $9$ respectively, and doing
+arithmetic as usual: $4 + 5 = 9$. The following table shows a few worked
+examples of this encoding scheme:
+
+| A | B | f(A) | f(B) | f(A) + f(B) | after overflow | A + B |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| 2 | 2 | 2 | 2 | 4 | 4  | 4 |
+| 1 | -5 | 1 | 5 | 6 |  6 | -4 |
+| -2 | -3 | 8 | 7 | 15 | 5 | -5 |
 
