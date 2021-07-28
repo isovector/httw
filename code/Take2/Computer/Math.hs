@@ -1,8 +1,10 @@
 {-# LANGUAGE OverloadedStrings             #-}
 {-# OPTIONS_GHC -Wno-redundant-constraints #-}
+{-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
 
 module Take2.Computer.Math where
 
+import GHC.TypeLits
 import           Prelude hiding ((.), id, sum)
 import           Circuitry.Machinery
 import qualified Circus.Types as Y
@@ -10,6 +12,7 @@ import qualified Clash.Sized.Vector as V
 import qualified Data.Map as M
 import Circus.DSL
 import Circuitry.Graph (Graph(Graph))
+import Take2.Computer.Simple (bigNotGate)
 
 
 everyPair
@@ -63,6 +66,42 @@ addN = diagrammed gr
       addCell $ Y.mkCell Y.CellAdd $ M.fromList
         [ ("A", (Y.Input, V.toList a))
         , ("B", (Y.Input, V.toList b))
+        , ("Y", (Y.Output, V.toList res))
+        , ("Cout", (Y.Output, [c]))
+        ]
+      pure (res V.++ (c V.:> V.Nil))
+
+maybeNegate :: KnownNat n => Circuit (Bool, Vec n Bool) (Vec n Bool)
+maybeNegate
+    = second' (copy >>> first' bigNotGate)
+  >>> distribP
+  >>> second' (first' notGate)
+  >>> both (swap >>> tribufAll)
+  >>> pairwiseShort
+
+addsubN
+    :: forall a
+     . (SeparatePorts a, Numeric a, OkCircuit a)
+    => Circuit (Bool, (a, a)) (a, Bool)
+addsubN = diagrammed gr
+     $ second' (both serial >>> swap)
+   >>> reassoc
+   >>> first' (first' copy >>> reassoc' >>> second' maybeNegate)
+   >>> reassoc'
+   >>> second' (swap >>> zipVC)
+   >>> swap
+   >>> mapFoldVC (reassoc' >>> add2)
+   >>> first' unsafeParse
+  where
+    gr :: Graph (Bool, (a, a)) (a, Bool)
+    gr = Graph $ \(n :> (i :: Vec (SizeOf a * 2) Y.Bit)) -> do
+      let (a, b) = V.splitAtI @(SizeOf a) @(SizeOf a) i
+      res <- synthesizeBits @a
+      c <- freshBit
+      addCell $ Y.mkCell (Y.CellGeneric "$addsub") $ M.fromList
+        [ ("A", (Y.Input, V.toList a))
+        , ("B", (Y.Input, V.toList b))
+        , ("S", (Y.Input, [n]))
         , ("Y", (Y.Output, V.toList res))
         , ("Cout", (Y.Output, [c]))
         ]

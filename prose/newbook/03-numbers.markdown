@@ -550,7 +550,7 @@ that this time it's the same as subtracting 2:
 If we only had ten digits to play with, we could assign a mapping between our
 digits and numbers that looks like this:
 
-| Digit | Number |
+| A | B |
 |:-:|:-:|
 | 0 | 0 |
 | 1 | 1 |
@@ -569,16 +569,76 @@ they start counting back up from there. This system is peculiar at first blush,
 but as we will see, corresponds closely with our notions of how addition and
 subtraction should work.
 
-The idea is that to do arithmetic here, we reason in terms of the "number"
-column, but add in terms of the "digit" column. As we'd expect, the usual laws
-of addition work: $2 + 2 = 4$. But under our mapping above, we also get that $4
-- 5 = -1$, by rewriting $-5$ and $-1$ as $5$ and $9$ respectively, and doing
-arithmetic as usual: $4 + 5 = 9$. The following table shows a few worked
-examples of this encoding scheme:
+The trick is now think about the B column, but do arithmetic in the A column.
+For example, if we wanted to add $4 + (-2)$ we would consider those both to be
+numbers in the B column. We could rewrite them as their numbers in the A column
+($4 + 8$) and then add as usual. This gives us $12$, which then overflows to
+$2$. This is still in the A column, so we move it back to the B column (although
+it stays 2.) And voila, we've calculated that $4 + (-2) = 2$.
 
-| A | B | f(A) | f(B) | f(A) + f(B) | after overflow | A + B |
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| 2 | 2 | 2 | 2 | 4 | 4  | 4 |
-| 1 | -5 | 1 | 5 | 6 |  6 | -4 |
-| -2 | -3 | 8 | 7 | 15 | 5 | -5 |
+Of course, this doesn't come for free. There are a few nonsensical results in
+the above system --- for example, $4 + 4 = -2$ and $(-5) + (-4) = 1$. These are
+limitations of the technique known as *signed integer overflows,* and happen
+when the result of an addition has the opposite sign of what you'd expect. The
+bogus equations arise at the extremities of the numbers we can represent, and
+are caused by numbers getting "too positive" or "too negative."
+
+> TODO(sandy): something interesting to be said here about the infinitude of
+> numbers and the finiteness of the universe. these constraints exist
+> EVERYWHERE, but we aren't bothered by them because we never actually deal with
+> anything big enough to care
+
+Unfortunately, there is no solution to this problem. Because circuits are
+physical devices with physical constraints, there will always be numbers so
+extreme that they can't fit. However, this isn't a huge problem in practice;
+numbers that humans care about are rarely bigger than 10,000, which fit
+comfortably inside word sizes used by everyday computers.
+
+We have simplified the problem of subtraction into a problem of addition of a
+negative value. The high-level circuit is described by @fig:sub_bb --- all that
+remains is to implement `negate`.
+
+```{#fig:sub_bb design=code/Design.hs label="Computing A-B"}
+unsafeReinterpret @(Named "A" Word4, Named "B" Word4) >>> second' (component "negate" id) >>> addN @Word4 >>> unsafeReinterpret @_ @(Named "A-B" Word4, Named "Cout" Bool)
+```
+
+So, what does a negative binary number look like? By convention, a binary number
+with its largest bit set to 1 is considered negative. This forces --- like in
+the base-10 example --- that the positive numbers come before negative ones.
+And, analogous to how 9 acts as $-1$ in the base-10 example, the largest number
+we can represent in our word length should also correspond to $-1$.
+
+Thus, we must solve the following set of equations:
+
+1. $negate [0](binary-4) = [0](binary-4)$
+2. $negate [1](binary-4) = [15](binary-4)$
+
+Equation 1 comes from the fact that $-0 = 0.
+
+> TODO(sandy): interlude on bit negation here?
+
+After some fiddling, we can see that "negate all the bits, and then add one" is
+a satisfactory implementation of `negate`.
+
+```{#fig:negate_naive design=code/Design.hs label="negate"}
+bigNotGate >>> unsafeParse >>> intro 1 >>> addN @Word4 >>> fst'
+```
+
+While @fig:negate_naive certainly works, it's rather wasteful, requiring a
+entire second `add` circuit simply to add one. But recall that all `full adder`
+circuits have a "carry-in" input which corresponds to whether or not a one
+should be added to the result. In @fig:ripple4_sym we tied the lowest `Cin` to
+`off` --- but now we've discovered a use for it. Rather than using a second
+`add` circuit inside of `negate`, we can repurpose the `Cin` input.
+
+```{#fig:ripple2sub design=code/Design.hs depth=1 label="Ripple Carry Adder Subtractor"}
+unsafeReinterpret @(Named "Sub" Bool, (Named "A" Word2, Named "B" Word2)) >>> addsubN @Word2 >>> unsafeReinterpret @_ @(Named "A+B" Word2, Named "Cout" Bool)
+```
+
+> TODO(sandy): tribuf appears here for the first time
+
+```{#fig:ripple4sub_bb design=code/Design.hs label="Ripple Carry Adder Subtractor"}
+unsafeReinterpret @(Named "Sub" Bool, (Named "A" Word4, Named "B" Word4)) >>> addsubN @Word4 >>> unsafeReinterpret @_ @(Named "A+B" Word4, Named "Cout" Bool)
+```
+
 

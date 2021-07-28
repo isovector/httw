@@ -33,6 +33,12 @@ bigAndGate
   $ create >>> second' (constC True) >>> foldVC andGate
 
 
+bigNotGate :: KnownNat n => Circuit (Vec n Bool) (Vec n Bool)
+bigNotGate
+  = gateDiagram (unaryGateDiagram Y.CellNot)
+  $ mapV notGate
+
+
 pointwiseAnd
     :: (KnownNat n, KnownNat m)
     => Circuit (Vec m (Vec n Bool)) (Vec n Bool)
