@@ -635,6 +635,10 @@ should be added to the result. In @fig:ripple4_sym we tied the lowest `Cin` to
 unsafeReinterpret @(Named "Sub" Bool, (Named "A" Word2, Named "B" Word2)) >>> addsubN @Word2 >>> unsafeReinterpret @_ @(Named "A+B" Word2, Named "Cout" Bool)
 ```
 
+```{#fig:mnegate design=code/Design.hs depth=1 label="mnegate"}
+mnegate @4
+```
+
 > TODO(sandy): tribuf appears here for the first time
 
 ```{#fig:ripple4sub_bb design=code/Design.hs label="Ripple Carry Adder Subtractor"}

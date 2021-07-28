@@ -71,9 +71,10 @@ addN = diagrammed gr
         ]
       pure (res V.++ (c V.:> V.Nil))
 
-maybeNegate :: KnownNat n => Circuit (Bool, Vec n Bool) (Vec n Bool)
-maybeNegate
-    = second' (copy >>> first' bigNotGate)
+mnegate :: KnownNat n => Circuit (Bool, Vec n Bool) (Vec n Bool)
+mnegate
+    = component "mnegate"
+    $ second' (copy >>> first' bigNotGate)
   >>> distribP
   >>> second' (first' notGate)
   >>> both (swap >>> tribufAll)
@@ -86,7 +87,7 @@ addsubN
 addsubN = diagrammed gr
      $ second' (both serial >>> swap)
    >>> reassoc
-   >>> first' (first' copy >>> reassoc' >>> second' maybeNegate)
+   >>> first' (first' copy >>> reassoc' >>> second' mnegate)
    >>> reassoc'
    >>> second' (swap >>> zipVC)
    >>> swap
