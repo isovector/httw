@@ -10,7 +10,7 @@ tickTock = fixC False $ snd' >>> copy >>> second' notGate
 
 
 clock
-    :: forall a. (Show a, SeparatePorts a, Embed a, OkCircuit a, Numeric a)
+    :: forall a. (Show a, SeparatePorts a, Reify a, OkCircuit a, Numeric a)
     => Circuit () a
 clock = fixC (zero @a)
       $ first' (constC one)

@@ -44,7 +44,7 @@ snapN = component ("snap " <> show (typeRep $ Proxy @a))
     >>> mapV snap
 
 
-mkRom :: (KnownNat n, Show a, Embed a) => Vec (2 ^ n) a -> Circuit (Addr n) a
+mkRom :: (KnownNat n, Show a, Reify a) => Vec (2 ^ n) a -> Circuit (Addr n) a
 mkRom mem
     = decode
   >>> parallelMetaV (fmap (\a -> intro a
@@ -58,7 +58,7 @@ mkRom mem
 
 data RW = R | W
   deriving stock (Eq, Ord, Show, Enum, Bounded, Generic)
-  deriving (Embed, Arbitrary) via (EmbededEnum RW)
+  deriving (Embed, Reify, Arbitrary) via (EmbededEnum RW)
 
 
 data MemoryCommand n a = MemoryCommand
@@ -67,7 +67,9 @@ data MemoryCommand n a = MemoryCommand
   , mc_data :: a
   }
   deriving stock (Generic, Show)
-  deriving anyclass Embed
+  deriving anyclass (Reify)
+
+deriving anyclass instance (KnownNat n, Embed a) => Embed (MemoryCommand n a)
 
 instance (KnownNat n, Arbitrary a) => Arbitrary (MemoryCommand n a) where
   arbitrary = genericArbitrary
@@ -85,7 +87,7 @@ unpackMemoryCommand
 
 memoryCell
     :: forall n a
-     . (Nameable a, SeparatePorts a, KnownNat n, Embed a, Typeable a)
+     . (SeparatePorts a, KnownNat n, Embed a, Typeable a)
     => Circuit (MemoryCommand n a) (Vec (SizeOf a) Bool)
 memoryCell
     = unpackMemoryCommand

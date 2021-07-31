@@ -1,7 +1,7 @@
 {-# LANGUAGE AllowAmbiguousTypes  #-}
 {-# LANGUAGE UndecidableInstances #-}
 
-{-# OPTIONS_GHC -fconstraint-solver-iterations=10 #-}
+{-# OPTIONS_GHC -fconstraint-solver-iterations=20 #-}
 
 module Take2.Computer.Bus where
 
@@ -17,14 +17,15 @@ data BusCommand n word
   | BusAlu    (AluCommand word)
   | BusROM    (Addr n)
   deriving stock (Show, Generic)
-  deriving anyclass Embed
+  deriving anyclass (Reify)
+
+deriving anyclass instance (KnownNat n, Embed word) => Embed (BusCommand n word)
 
 bus
     :: forall n word
      . ( 2 <= SizeOf word
-       , Embed word
+       , Reify word
        , KnownNat n
-       , Nameable word
        , Numeric word
        , SeparatePorts word
        , Show word

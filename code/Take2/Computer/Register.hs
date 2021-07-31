@@ -4,7 +4,6 @@
 module Take2.Computer.Register where
 
 import qualified Clash.Sized.Vector as V
-import           Data.Typeable
 import           Prelude hiding ((.), id, sum)
 import           Circuitry.Machinery
 import           Test.QuickCheck.Arbitrary.Generic (genericArbitrary)
@@ -28,7 +27,7 @@ data Register
   | R15
   | R16
   deriving stock (Eq, Ord, Show, Enum, Bounded, Generic)
-  deriving (Embed, Arbitrary) via EmbededEnum Register
+  deriving (Embed, Reify, Arbitrary) via EmbededEnum Register
 
 data Flags = Flags
   { f_neg      :: Bool
@@ -37,7 +36,7 @@ data Flags = Flags
   , f_carry    :: Bool
   }
   deriving stock (Eq, Show, Generic)
-  deriving anyclass Embed
+  deriving anyclass (Embed, Reify)
 
 data Registers pc sp word = Registers
   { reg_PC :: pc
@@ -61,7 +60,9 @@ data Registers pc sp word = Registers
   , reg_flags :: Flags
   }
   deriving stock (Eq, Show, Generic)
-  deriving anyclass Embed
+  deriving anyclass (Reify)
+
+deriving anyclass instance (Embed pc, Embed sp, Embed word) => Embed (Registers pc sp word)
 
 instance Arbitrary Flags where
   arbitrary = genericArbitrary
@@ -73,7 +74,7 @@ instance (Arbitrary pc, Arbitrary sp, Arbitrary word) => Arbitrary (Registers pc
 
 getReg
     :: forall pc sp word
-     . (Embed pc, Embed sp, Embed word, Typeable pc, Typeable sp, Typeable word, SeparatePorts word)
+     . (Reify pc, Reify sp, Reify word, SeparatePorts word)
     => Circuit (Registers pc sp word, Register) word
 getReg
     = shortcircuit fast
@@ -122,7 +123,7 @@ getReg
 
 setReg
     :: forall pc sp word
-     . (Embed pc, Embed sp, Embed word, Typeable pc, Typeable sp, Typeable word, SeparatePorts word)
+     . (Reify pc, Reify sp, Reify word, SeparatePorts word)
     => Circuit ((Register, word), Registers pc sp word) (Registers pc sp word)
 setReg
     = shortcircuit fast
@@ -172,9 +173,9 @@ setReg
 
 registers
     :: forall pc sp word a b
-     . ( Embed pc
-       , Embed sp
-       , Embed word
+     . ( Reify pc
+       , Reify sp
+       , Reify word
        , Embed a
        , Embed b
        )

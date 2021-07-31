@@ -48,7 +48,7 @@ add2
 
 addN
     :: forall a
-     . (SeparatePorts a, Numeric a, OkCircuit a)
+     . (SeparatePorts a, Numeric a, Reify a)
     => Circuit (a, a) (a, Bool)
 addN = diagrammed gr
      $ shortcircuit (uncurry addNumeric)

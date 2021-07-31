@@ -22,10 +22,6 @@ andV :: KnownNat n => Circuit (Bool, Vec n Bool) (Vec n Bool)
 andV = component "andV" $ distribV >>> mapV andGate
 
 
-pointwise :: (Embed a, Embed b, Embed c, KnownNat n) => Circuit (a, b) c -> Circuit (Vec n a, Vec n b) (Vec n c)
-pointwise c = zipVC >>> mapV c
-
-
 bigAndGate :: KnownNat n => Circuit (Vec n Bool) Bool
 bigAndGate
   = shortcircuit (V.foldr (&&) True)
@@ -60,7 +56,7 @@ ifOrEmpty c = second' (c >>> serial) >>> andV
 
 
 when
-    :: (Embed k, Embed v, Embed r, Show k, SeparatePorts k, SeparatePorts v)
+    :: (Reify k, Embed v, Embed r, Show k, SeparatePorts k, SeparatePorts v)
     => k
     -> Circuit v r
     -> Circuit (k, v) (Vec (SizeOf r) Bool)
@@ -69,7 +65,7 @@ when k c = interface' (mkPort "i") (mkPort "o") diagrammed (fmap (mappend "case 
        >>> ifOrEmpty c
 
 when'
-    :: (Embed k, Embed v, Embed r, Show k, SeparatePorts k, SeparatePorts v)
+    :: (Reify k, Embed v, Embed r, Show k, SeparatePorts k, SeparatePorts v)
     => k
     -> Circuit (Bool, v) r
     -> Circuit (k, v) (Vec (SizeOf r) Bool)

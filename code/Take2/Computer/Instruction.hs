@@ -27,5 +27,5 @@ data Instruction
   | IJump Register HalfW
   | IBranchZ Register HalfW
   deriving stock (Eq, Ord, Show, Generic)
-  deriving anyclass Embed
+  deriving anyclass (Embed, Reify)
 

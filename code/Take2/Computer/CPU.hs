@@ -17,7 +17,7 @@ data Step
   | Decode  W
   | Execute Instruction
   deriving stock (Eq, Ord, Show, Generic)
-  deriving anyclass Embed
+  deriving anyclass (Embed, Reify)
 
 
 cpu
