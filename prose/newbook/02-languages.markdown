@@ -212,5 +212,58 @@ the problem. Thus, your solution to the problem can only ever be as good as your
 model. The most beautiful, elegant, economical solution in the world is of no
 use if it's for a problem you don't have.
 
+> TODO(sandy): next steps:
+> tie this to boolean algebra
+> show OR via duality
+> what's a game we can play with heyting algebra? 3sat?
+
+
+### Revisiting YNA
+
+> TODO(sandy): there is great opportunity for a pun here, if we replace yea with
+> "da"
+>
+> but then it's hard to make ANY work for the dual?
+
+An interesting fact about systems is that we can get the same results from
+completely different rules. For example, the following two rules "give rise" to
+the same YNA game:
+
+
+RULE 1.
+
+:  If your string is of the form `YAj`, it will reduce to `j`.
+
+
+RULE 2.
+
+:  If your string is of the form `NAj`, it reduces to `N`.
+
+
+There is no rule 3 (but we keep rules 4-5 around implicitly, since they are more
+"rules about how to use the rules" than *actual* rules.)
+
+Let's call this game YNA' (read: "YNA-prime".) Given the same starting
+string, YNA and YNA' will reduce to the same normal form. It's not too hard to
+show why[^how-to-derive]. That we can formulate the same system in two different
+ways is particularly thought provoking, as it suggests there is something "real"
+about the problem that we are capturing, albeit indirectly.
+
+[^how-to-derive]: If you're inclined, try to derive these rules as combinators
+  of YNA, and then try to derive the rules of YNA as combinators of YNA'.
+
+To illustrate this idea more poetically, consider @fig:carving-joints, which is
+a sketch of the sun and the moon. If we'd like to partition this image,
+separating the sun from the moon, we will need to draw a boundary between the
+two. But there are infinitely many different boundaries we can draw --- as shown
+in @fig:carving-joints --- and each is as good as the next for separating the
+celestial bodies. Of course, we might have other desiderata to consider: such as
+simplicity, or level, or elegance, or ease of drawing.
+
+![Different ways of carving](images/sketches-0.png){#fig:carving-joints}
+
+![hello!](images/sketches-1.png)
+
+
 
 
