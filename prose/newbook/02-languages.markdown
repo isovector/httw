@@ -56,6 +56,7 @@ RULE 5.
 
 :  You are not allowed to change the term in any way other than via rules 1-3.
 
+
 Let's take our example string, `YAYAN`, and play with these rules. Remember, the
 goal is to produce as short a term as possible. At any point, multiple rules
 might apply, and we can decide to follow any one of them. Because our string
@@ -95,7 +96,7 @@ develop strong convictions after playing with a few more examples. However, not
 every combination of `A`, `N` and `Y` is allowed as a starting term; as I said
 earlier, these terms have a very particular form they must follow. We will
 discuss the form in a moment, but before then, try playing around with the valid
-starting strings `YAYAY`, `NANAYAN` and `YANAYAYAYAYAYAYAN`.
+starting strings `YAYAY`, `NANANAYAN` and `YANAYAYAYAYAYAYAN`.
 
 If you've diligently worked through the these three terms, you probably came
 upon some answers to our earlier questions. It seems that every sequence of
@@ -136,10 +137,80 @@ Interestingly, the rules of our game all take grammatical strings to grammatical
 strings. If you start with a grammatical string, there is no way to produce an
 ungrammatical term by following the rules of the game.
 
-It's time to reveal the shortcut for "jumping ahead" to the normal form of the
-starting string. The rules of our game were carefully constructed so that the
-normal form is `N` *if, and only if,* there was at least one `N` in the starting
-term. If there wasn't, the normal form is `Y`.
+In playing with the examples, you might have noticed how some rules can be
+combined in order to save some work. For example, because `NAN` gets replaced
+with `N`, by taking a birds-eye view of the system, we can notice that *any*
+length of alternating `N`s and `A`s will reduce to a single `N`. Moves of this
+kind are called *combinators.* Combinators are not rules per se, but they are
+a sequence of rules combined. You'll get the same answer whether you replace all
+`NAN`s at once, or if you do them one at a time, but the first approach saves
+some time.
+
+A more interesting combinator is that we can eliminate a `YA` from anywhere, not
+just at the beginning of the string. How? By being strategic with our pivoting.
+There are two places that a `YA` might be --- at the front, at the end, or
+somewhere in the middle.
+
+If it's at the front, the `YA` is extremely easy to eliminate --- just use rule
+2!  But maybe the `Y` is somewhere in the middle. But this must mean there are
+two `A`s surrounding it. Thus, the situation must look like this (recall our
+placeholder notation):
+
+```text
+jAYAk
+```
+
+If we pivot around the first `A`, we produce
+
+```text
+YAkAj
+```
+
+Now `YA` is at the front, so we can eliminate it, producing `kAj`. All that's
+left is to pivot again on the `A`, to get back where we started (minus the
+`YA`.) It might be tempting to stop at `kAj`, without swapping back, but such a
+combinator wouldn't do what we claim. The claim is that we can "eliminate a `YA`
+from anywhere," which implicitly also says "without changing anything else." We
+will look at more complicated systems later on, where our only hope of
+understanding is dependent on our combinators working *precisely how we say.*
+
+There is another, very similar combinator, that says we can eliminate a `AY`
+from anywhere in the string. Try to derive this combinator for yourself.
+
+Between these three combinators, it's extremely easy to immediately jump to the
+normal form for any grammatical string. We can eliminate all `YA` and `AY`s,
+which will result in either a single remaining `Y`, or a string of `NAN`s, which
+can immediately collapsed into a single `N`.
+
+We can describe the behavior of this game thusly: a term's normal form is `N`
+if --- and only if --- the term contains one or more `N`s . Otherwise, the
+normal form is `Y`.
+
+Perhaps you will be surprised to learn that this little game is played by
+executive boards and governmental committees all around the world. It's true!
+But in those contexts, this game is called "a unanimous vote." You can interpret
+a `Y` to be a "yea" vote, an `N` to be a "nay", and an `A` to mean "and". Thus,
+we can decipher `YANAY` as "yea and nay and yea."
+
+Under this interpretation, the starting term corresponds to the votes of each
+member, and the normal form is whether or not the motion passed!
+
+This is our first taste of a *model* for a problem --- where "problem" is to be
+understood very broadly; it might better be called as a "situation." A model of
+a problem is a transformation from the real-world details to a mathematical
+system like our game. In order to be a model, the system must adequately
+"capture" the salient parts of the decision. For example, our game makes no
+mention of the hairstyles of the voters; it is tacitly understood that, while
+the voters do have hairstyles (probably,) such details are irrelevant to the
+problem at hand. Of course, if we were modeling a hair salon, the hairstyles
+might become extremely relevant, while the political leanings of the patrons
+would diminish in importance.
+
+Problem modeling, as a skill, is the most important skill of the
+computationalist. A model corresponds to a worldview --- a way of understanding
+the problem. Thus, your solution to the problem can only ever be as good as your
+model. The most beautiful, elegant, economical solution in the world is of no
+use if it's for a problem you don't have.
 
 
 
