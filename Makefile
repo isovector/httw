@@ -53,7 +53,10 @@ $(sources): build/tex/%.tex: prose/metadata.markdown prose/%.markdown $(prose) f
 build/epub.epub: build/%.epub: prose/metadata.markdown prose/%.markdown $(prose) theme/* prose/bib.bib $(IMAGES) format/epub.css
 	pandoc $(PANDOC_OPTS) --epub-embed-font=Katibeh.ttf -t epub -o $@ $(filter %.markdown,$^)
 
-.PHONY: clean clean-images very-clean all $(RULES) epub lp
+.PHONY: clean clean-images very-clean all $(RULES) epub lp sketches
+
+sketches:
+	./scripts/sync-httw.sh
 
 clean:
 	make -C build clean
