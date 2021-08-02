@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 0a21fde5da1df9d40dc50913a9a1d5794e9a1db5416993329a282ac6f06404ba
+-- hash: 83a0df72e4b79982741c26d69a1d6a3af540d753330b84a1f0a34fb859d38c03
 
 name:           httw
 version:        0.1.0.0

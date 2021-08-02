@@ -79,8 +79,8 @@ instance CustomShow a => SplitProduct a where
 truthTable
     :: forall a b
      . ( Enumerable a
-       , Embed a
-       , Embed b
+       , Reify a
+       , Reify b
        , SplitProduct a
        , SplitProduct b
        )

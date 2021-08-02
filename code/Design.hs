@@ -18,7 +18,7 @@ import TruthTable
 
 
 __design
-    :: (SeparatePorts a, SeparatePorts b, Embed a, Embed b)
+    :: (SeparatePorts a, SeparatePorts b, Reify a, Reify b)
     => (String, [String], [(String, String)])
     -> String
     -> String
@@ -55,8 +55,8 @@ __design (name, _, kvs) txt hash c = do
 
 truth
     :: ( Enumerable a
-       , Embed a
-       , Embed b
+       , Reify a
+       , Reify b
        , SplitProduct a
        , SplitProduct b
        )
