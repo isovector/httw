@@ -22,6 +22,9 @@ RULE 1.
 :  If your string contains a `NAN`, you can replace it with `N`.
 
 
+![Rule 1](images/and-1.png)
+
+
 For example, you can transform `YYNANN` into `YYN` via rule 1. If you're given
 `YNANAN`, you can produce `YNNAN`, or `YNANN`.
 
@@ -29,6 +32,9 @@ For example, you can transform `YYNANN` into `YYN` via rule 1. If you're given
 RULE 2.
 
 :  If your string begins with `YA`, you can remove the prefix.
+
+
+![Rule 2](images/and-0.png)
 
 
 For example, rule 2 lets us change `YAY` into `Y`. But it **doesn't** allow us
@@ -39,6 +45,9 @@ RULE 3.
 
 :  If your string contains an `A` in the middle, you can swap what's on the
    left side of the `A` with what's on the right side.
+
+
+![Rule 3](images/and-2.png)
 
 
 To illustrate rule 3, consider the term `YYANAN`. By rule 3, we can replace it
@@ -262,8 +271,7 @@ simplicity, or level, or elegance, or ease of drawing.
 
 ![Different ways of carving](images/sketches-0.png){#fig:carving-joints}
 
-![hello!](images/sketches-1.png)
-
-
-
+```{design=code/Languages/And.hs}
+A (A Y (A N N)) (A Y (A Y Y))
+```
 

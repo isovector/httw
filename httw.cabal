@@ -24,6 +24,8 @@ source-repository head
 library
   exposed-modules:
       Design
+      Dot
+      Languages.And
       Take2.Computer.Addressed
       Take2.Computer.ALU
       Take2.Computer.Bus
