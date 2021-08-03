@@ -16,6 +16,8 @@ and `A`, and have a very particular form, which I will reveal to you later.
 
 Ready for the rules?
 
+> TODO(sandy): this is now about trees, not strings
+
 
 RULE 1.
 
@@ -272,6 +274,6 @@ simplicity, or level, or elegance, or ease of drawing.
 ![Different ways of carving](images/sketches-0.png){#fig:carving-joints}
 
 ```{design=code/Languages/And.hs}
-A (A Y (A N N)) (A Y (A Y Y))
+A (A N (A (MV Spade) (MV Diamond))) (A Y (A (MV Club) (MV Heart)))
 ```
 

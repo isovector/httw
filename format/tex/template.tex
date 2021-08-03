@@ -453,14 +453,19 @@ $endif$
   \endgroup
 }
 
+\newfontfamily\suitfont{DejaVu Sans}
 
 
-
-
+\newunicodechar{♥}{\suitfont♥}
+\newunicodechar{♦}{\suitfont♦}
+\newunicodechar{♣}{\suitfont♣}
+\newunicodechar{♠}{\suitfont♠}
 
 
 \newfontfamily{\substitutefont}[Scale=MatchLowercase]{Noto Sans}
 \setTransitionsForGreek{\begingroup\substitutefont}{\endgroup}
+
+
 
 \pagestyle{fancy}
 \setlength{\headheight}{13.6pt}

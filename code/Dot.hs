@@ -20,6 +20,15 @@ newtype DotM a = DotM
     , MonadWriter [String]
     )
 
+data Metavar = Club | Diamond | Spade | Heart
+  deriving stock (Eq, Ord)
+
+instance Show Metavar where
+  show Club = "&clubs;"
+  show Diamond = "&diams;"
+  show Spade = "&spades;"
+  show Heart = "&hearts;"
+
 
 runDotM :: DotM a -> String
 runDotM
