@@ -7,6 +7,7 @@ import Data.Bool (bool)
 import Data.List (group)
 import Data.Char (isAlphaNum)
 import System.Process (callProcess)
+import Data.Foldable (for_)
 
 
 newtype DotM a = DotM
@@ -20,6 +21,37 @@ newtype DotM a = DotM
     , MonadWriter [String]
     )
 
+instance Show (DotM a) where
+  show _ = "A tree"
+
+
+data Rule a = Rule a a
+  deriving stock (Eq, Ord, Show, Functor)
+
+instance ToDot a => ToDot (Rule a) where
+  toDot (Rule l r) = do
+    ln <- cluster "Lhs" $ toDot l
+    larr <- invisNode
+    rarr <- invisNode
+    addEdge larr rarr
+    rn <- cluster "Rhs" $ toDot r
+    sameRank [ln, larr, rarr, rn]
+    pure rn
+
+
+data Rose a = Pure a | Rose [Rose a]
+  deriving stock (Eq, Ord, Show, Functor)
+
+instance Show a => ToDot (Rose a) where
+  toDot (Pure a) = newNode $ show a
+  toDot (Rose ros) = do
+    ns <- traverse toDot ros
+    me <- newNode "&otimes;"
+    for_ ns $ addEdge me
+    pure me
+
+
+
 data Metavar = Club | Diamond | Spade | Heart
   deriving stock (Eq, Ord)
 
@@ -29,11 +61,18 @@ instance Show Metavar where
   show Spade = "&spades;"
   show Heart = "&hearts;"
 
+preamble :: [String]
+preamble =
+  [ "digraph g {"
+  , "bgcolor=\"transparent\";"
+  , "compound=true;"
+  , "newrank=true;"
+  ]
 
 runDotM :: DotM a -> String
 runDotM
   = unlines
-  . ("digraph g {\nbgcolor=\"transparent\"" :)
+  . (join preamble :)
   . (++ ["}"])
   . snd
   . runWriter
@@ -43,6 +82,9 @@ runDotM
 
 class ToDot a where
   toDot :: a -> DotM Node
+
+instance ToDot (DotM Node) where
+  toDot = id
 
 
 newtype Node = Node
@@ -61,6 +103,29 @@ newNode label = do
   modify' (+ 1)
   tell $ pure $ nodeName n <> "[label=" <> show label <> "]"
   pure n
+
+
+invisNode :: DotM Node
+invisNode = do
+  n <- fmap Node get
+  modify' (+ 1)
+  tell $ pure $ nodeName n <> "[style=\"invis\"]"
+  pure n
+
+
+sameRank :: [Node] -> DotM ()
+sameRank ns = do
+  tell $ pure "{ rank=same; "
+  for_ ns $ tell . pure . (<> ";") . nodeName
+  tell $ pure "}"
+
+
+cluster :: String -> DotM a -> DotM a
+cluster label m = do
+  tell $ pure $ "subgraph cluster" <> label <> " {"
+  r <- m
+  tell $ pure "}"
+  pure r
 
 
 addEdge :: Node -> Node -> DotM ()

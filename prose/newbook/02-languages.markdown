@@ -7,6 +7,21 @@ machine for evaluating the systems we've been building all along.
 
 <!-- TODO(sandy): terrible sentence, but hey, gotta start somewhere -->
 
+An extremely important idea in computer science is that of the tree. A tree
+look something like this:
+
+```{design=code/Dot.hs}
+Rose [Rose [Pure Club, Pure Club], Pure Heart, Pure Diamond, Rose [Rose [Pure Spade]]]
+
+```
+
+It looks more like a conventional, real-world tree if you imagine it
+upside-down. But, for whatever historical reason, these trees are drawn
+top down.
+
+
+
+
 Let's play a little game. I will give you a string of letters, like `YAYAN`.
 These strings are also called *terms,* and I will use both words. The goal of
 the game is to "reduce" the term into the shortest possible string that you can.
@@ -26,6 +41,9 @@ RULE 1.
 
 ![Rule 1](images/and-1.png)
 
+```{design=code/Languages/And.hs}
+Rule (A N N) N
+```
 
 For example, you can transform `YYNANN` into `YYN` via rule 1. If you're given
 `YNANAN`, you can produce `YNNAN`, or `YNANN`.
@@ -37,6 +55,10 @@ RULE 2.
 
 
 ![Rule 2](images/and-0.png)
+
+```{design=code/Languages/And.hs}
+Rule (A Y (MV Club)) $ MV Club
+```
 
 
 For example, rule 2 lets us change `YAY` into `Y`. But it **doesn't** allow us
@@ -50,6 +72,10 @@ RULE 3.
 
 
 ![Rule 3](images/and-2.png)
+
+```{design=code/Languages/And.hs}
+Rule (A (MV Club) (MV Diamond)) $ A (MV Diamond) (MV Club)
+```
 
 
 To illustrate rule 3, consider the term `YYANAN`. By rule 3, we can replace it

@@ -9,7 +9,7 @@ instance Show AndLang where
   showsPrec _ Y = showString "Y"
   showsPrec _ N = showString "N"
   showsPrec _ (MV m) = showString $ show m
-  showsPrec p (A l r) = showParen (p == 10) $ showsPrec 10 l . showString "A" . showsPrec 10 r
+  showsPrec p (A l r) = showParen (p /= 0) $ showsPrec 10 l . showString "A" . showsPrec 10 r
 
 instance ToDot AndLang where
   toDot Y = newNode "Y"
