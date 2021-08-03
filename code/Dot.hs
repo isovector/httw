@@ -25,11 +25,11 @@ instance Show (DotM a) where
   show _ = "A tree"
 
 
-data Rule a = Rule a a
+data GoesTo a = GoesTo a a
   deriving stock (Eq, Ord, Show, Functor)
 
-instance ToDot a => ToDot (Rule a) where
-  toDot (Rule l r) = do
+instance ToDot a => ToDot (GoesTo a) where
+  toDot (GoesTo l r) = do
     ln <- cluster "Lhs" $ toDot l
     larr <- invisNode
     rarr <- invisNode
@@ -160,7 +160,7 @@ __design (name, _, kvs) _ hash a = do
     , "-units"
     , "pixelsperinch"
     , "-resize"
-    , "55%"
+    , "40%"
     , fp
     ]
 

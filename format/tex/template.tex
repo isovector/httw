@@ -456,10 +456,11 @@ $endif$
 \newfontfamily\suitfont{DejaVu Sans}
 
 
-\newunicodechar{♥}{\suitfont♥}
-\newunicodechar{♦}{\suitfont♦}
-\newunicodechar{♣}{\suitfont♣}
-\newunicodechar{♠}{\suitfont♠}
+\newunicodechar{♥}{\begingroup\normalfont\suitfont♥\endgroup}
+\newunicodechar{♦}{\begingroup\normalfont\suitfont♦\endgroup}
+\newunicodechar{♣}{\begingroup\normalfont\suitfont♣\endgroup}
+\newunicodechar{♠}{\begingroup\normalfont\suitfont♠\endgroup}
+\newunicodechar{⊗}{\begingroup\normalfont\suitfont⊗\endgroup}
 
 
 \newfontfamily{\substitutefont}[Scale=MatchLowercase]{Noto Sans}

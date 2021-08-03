@@ -10,77 +10,121 @@ machine for evaluating the systems we've been building all along.
 An extremely important idea in computer science is that of the tree. A tree
 look something like this:
 
-```{design=code/Dot.hs}
+```{#fig:tree-ex design=code/Dot.hs}
 Rose [Rose [Pure Club, Pure Club], Pure Heart, Pure Diamond, Rose [Rose [Pure Spade]]]
-
 ```
 
 It looks more like a conventional, real-world tree if you imagine it
 upside-down. But, for whatever historical reason, these trees are drawn
-top down.
+top down. Trees are made up of *nodes,* which are those circles with arrows
+between them. A node may or may not have *children,* which are other nodes that
+it points to. For example, the node at the top of @fig:tree-ex has four
+children: &otimes;, &hearts;, &diams;, and &otimes;.
+
+If &hearts; is a child of &otimes;, then, as you might expect, &otimes; is a
+*parent* of &hearts;. Likewise, we have the notions of *ancestors* and
+*descendants* in a tree.
+
+There is always exactly one node in a tree that has no parents. This node is
+special, and is called the *root* of the tree.
+
+Furthermore, we don't allow any "incestuous" relationships between nodes of a
+tree. Every node (except the root) must have exactly one parent, and it is not
+allowed to be one of its own descendants --- that is to say, no loops are
+allowed.
 
 
+To illustrate these two rules, *neither of @fig:not-a-tree-loop nor
+@fig:not-a-tree-parents are trees,* even though they look superficially similar
+to @fig:a-tree --- which is.
 
+```{#fig:not-a-tree-loop design=code/Dot.hs label="Not a tree"}
+do { a <- newNode "A" ; b <- newNode "B" ; c <- newNode "C" ; addEdge a b ; addEdge a c ; addEdge c a; pure a }
+```
 
-Let's play a little game. I will give you a string of letters, like `YAYAN`.
-These strings are also called *terms,* and I will use both words. The goal of
-the game is to "reduce" the term into the shortest possible string that you can.
-But there's a trick --- you're only allowed to reduce a string via a few, very
-specific rules. The string I give you will consist only of the letters `Y`, `N`
-and `A`, and have a very particular form, which I will reveal to you later.
+```{#fig:not-a-tree-parents design=code/Dot.hs label="Also not a tree"}
+do { a <- newNode "A" ; b <- newNode "B" ; c <- newNode "C" ; addEdge a b ; addEdge a c ; addEdge b c; pure a }
+```
+
+```{#fig:a-tree design=code/Dot.hs}
+do { a <- newNode "A" ; b <- newNode "B" ; c <- newNode "C" ; addEdge a b ; addEdge a c; pure a }
+```
+
+That's enough theory for now. Let's play a little tree game. I will give you a
+tree, like @fig:yayan. The goal of the game is change the tree into the smallest
+one you can find.  But there's a trick --- you're only allowed to "reduce" the
+tree via a few, very specific rules. The tree I give you will only have nodes
+labeled `Y`, `N`, and `A`.
+
+```{#fig:yayan design=code/Languages/And.hs}
+A (A Y Y) N
+```
 
 Ready for the rules?
 
-> TODO(sandy): this is now about trees, not strings
-
-
-RULE 1.
-
-:  If your string contains a `NAN`, you can replace it with `N`.
-
-
-![Rule 1](images/and-1.png)
-
-```{design=code/Languages/And.hs}
-Rule (A N N) N
+```{#fig:yna-rule1 design=code/Languages/And.hs label="Rule 1"}
+GoesTo (A N N) N
 ```
 
-For example, you can transform `YYNANN` into `YYN` via rule 1. If you're given
-`YNANAN`, you can produce `YNNAN`, or `YNANN`.
+Rule 1 says that whenever you see a "sub-tree" that looks like the left-side
+of the diagram (let's call it "`NAN`" sub-tree), you can replace it with a
+single node labeled `N`. This sub-tree can appear *anywhere* in your tree!
 
+To illustrate this, we could use rule 1 to make the following transformation:
 
-RULE 2.
-
-:  If your string begins with `YA`, you can remove the prefix.
-
-
-![Rule 2](images/and-0.png)
-
-```{design=code/Languages/And.hs}
-Rule (A Y (MV Club)) $ MV Club
+```{#fig:yna-rule1-ex design=code/Languages/And.hs}
+let f x = A Y x in GoesTo (f $ A N N) $ f N
 ```
 
+Let's move on to rule 2:
 
-For example, rule 2 lets us change `YAY` into `Y`. But it **doesn't** allow us
-to change `NYA` into `N`, because `YA` *must come at the beginning.*
-
-
-RULE 3.
-
-:  If your string contains an `A` in the middle, you can swap what's on the
-   left side of the `A` with what's on the right side.
-
-
-![Rule 3](images/and-2.png)
-
-```{design=code/Languages/And.hs}
-Rule (A (MV Club) (MV Diamond)) $ A (MV Diamond) (MV Club)
+```{design=code/Languages/And.hs label="Rule 2"}
+GoesTo (A Y (MV Club)) $ MV Club
 ```
 
+What's this &clubs; doing here? Didn't I promise you that the only nodes in this
+game were `Y`, `N` and `A`? This &clubs; symbol is not a part of the real tree,
+it's a "placeholder" for *any sub-tree you want.* Whenever you apply rule 2, you
+can pick &clubs; to be anything at all!
 
-To illustrate rule 3, consider the term `YYANAN`. By rule 3, we can replace it
-with either `NANAYY`, or with `NAYYAN`, depending on which `A` we "pivot"
-around.
+In words, then, rule 2 says "we can remove the `A` and `Y` nodes if `Y` is on
+the left side." As an example, we could make transformation shown in
+@fig:yna-rule2-ex by letting &clubs; "fill in" for `NAN`:
+
+```{#fig:yna-rule2-ex design=code/Languages/And.hs}
+let f x = x (A N Y) in GoesTo (f (A Y)) $ f id
+```
+
+Like rule 1, rule 2 can be applied to any sub-tree, anywhere in the tree.
+
+But rule 2 isn't magical. It can't reduce a `Y` on the *right* side. For
+example, the following transformation is **illegal** via rule 2:
+
+```{#fig:yna-rule2-nex design=code/Languages/And.hs label="An **illegal** move!"}
+let f x = x (A N N) in GoesTo (f (flip A Y)) $ f id
+```
+
+If we find ourselves in a situation like @fig:yna-rule2-nex, not all is lost. Rule 3
+can sometimes be helpful:
+
+```{design=code/Languages/And.hs label="Rule 3"}
+GoesTo (A (MV Club) (MV Diamond)) $ A (MV Diamond) (MV Club)
+```
+
+In rule 3, we now have two placeholders --- &clubs; and &diams; --- each of
+which can fill in for any sub-tree that would be convenient. In effect, rule 3
+says we can swap what's on the left and the right of an arbitrary `A` node.
+This is illustrated by @fig:yna-rule3-ex.
+
+```{#fig:yna-rule3-ex design=code/Languages/And.hs}
+let f x = x A (A Y N) N in GoesTo (f id) $ f flip
+```
+
+Note that rule 3 only moves the left sub-tree to the right, and vice versa. It
+doesn't "mirror" the left and the right sides!
+
+In addition to these three "rules of play", there are two additional ones, which
+broadly state "you are not allowed to cheat."
 
 
 RULE 4.
