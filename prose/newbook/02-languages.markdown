@@ -38,16 +38,63 @@ To illustrate these two rules, *neither of @fig:not-a-tree-loop nor
 @fig:not-a-tree-parents are trees,* even though they look superficially similar
 to @fig:a-tree --- which is.
 
-```{#fig:not-a-tree-loop design=code/Dot.hs label="Not a tree"}
-do { a <- newNode "A" ; b <- newNode "B" ; c <- newNode "C" ; addEdge a b ; addEdge a c ; addEdge c a; pure a }
+```{#fig:not-a-tree-loop design=code/Dot.hs label="Not trees"}
+Beside
+  [ do
+      a <- newNode "A"
+      b <- newNode "B"
+      c <- newNode "C"
+      addEdge a b
+      addEdge a c
+      addEdge c a
+      pure a
+
+  , do
+      a <- newNode "A"
+      b <- newNode "B"
+      c <- newNode "C"
+      addEdge a b
+      addEdge a c
+      addEdge b c
+      pure a
+  , do
+    a <- newNode "A"
+    b <- newNode "B"
+    c <- newNode "C"
+    addEdge a b
+    addEdge a c
+    d <- newNode "D"
+    e <- newNode "E"
+    f <- newNode "F"
+    addEdge d e
+    addEdge d f
+    pure a
+  ]
 ```
 
-```{#fig:not-a-tree-parents design=code/Dot.hs label="Also not a tree"}
-do { a <- newNode "A" ; b <- newNode "B" ; c <- newNode "C" ; addEdge a b ; addEdge a c ; addEdge b c; pure a }
-```
-
-```{#fig:a-tree design=code/Dot.hs}
-do { a <- newNode "A" ; b <- newNode "B" ; c <- newNode "C" ; addEdge a b ; addEdge a c; pure a }
+```{#fig:a-tree design=code/Dot.hs label="Trees"}
+Beside
+  [ invisNode
+  , newNode "&hearts;"
+  , do
+      a <- newNode "A"
+      b <- newNode "B"
+      c <- newNode "C"
+      addEdge a b
+      addEdge b c
+      pure a
+  , do
+      a <- newNode "X"
+      b <- newNode "X"
+      c <- newNode "X"
+      d <- newNode "X"
+      e <- newNode "X"
+      addEdge a b
+      addEdge a c
+      addEdge a d
+      addEdge a e
+      pure a
+  ]
 ```
 
 That's enough theory for now. Let's play a little tree game. I will give you a
@@ -63,7 +110,7 @@ A (A Y Y) N
 Ready for the rules?
 
 ```{#fig:yna-rule1 design=code/Languages/And.hs label="Rule 1"}
-GoesTo (A N N) N
+GoesTo "Rule 1" (A N N) N
 ```
 
 Rule 1 says that whenever you see a "sub-tree" that looks like the left-side
@@ -73,13 +120,13 @@ single node labeled `N`. This sub-tree can appear *anywhere* in your tree!
 To illustrate this, we could use rule 1 to make the following transformation:
 
 ```{#fig:yna-rule1-ex design=code/Languages/And.hs}
-let f x = A Y x in GoesTo (f $ A N N) $ f N
+let f x = A Y x in GoesTo "Rule 1" (f $ A N N) $ f N
 ```
 
 Let's move on to rule 2:
 
 ```{design=code/Languages/And.hs label="Rule 2"}
-GoesTo (A Y (MV Club)) $ MV Club
+GoesTo "Rule 2" (A Y (MV Club)) $ MV Club
 ```
 
 What's this &clubs; doing here? Didn't I promise you that the only nodes in this
@@ -92,7 +139,7 @@ the left side." As an example, we could make transformation shown in
 @fig:yna-rule2-ex by letting &clubs; "fill in" for `NAN`:
 
 ```{#fig:yna-rule2-ex design=code/Languages/And.hs}
-let f x = x (A N Y) in GoesTo (f (A Y)) $ f id
+let f x = x (A N Y) in GoesTo "Rule 2" (f (A Y)) $ f id
 ```
 
 Like rule 1, rule 2 can be applied to any sub-tree, anywhere in the tree.
@@ -101,14 +148,14 @@ But rule 2 isn't magical. It can't reduce a `Y` on the *right* side. For
 example, the following transformation is **illegal** via rule 2:
 
 ```{#fig:yna-rule2-nex design=code/Languages/And.hs label="An **illegal** move!"}
-let f x = x (A N N) in GoesTo (f (flip A Y)) $ f id
+let f x = x (A N N) in GoesTo "Rule 2" (f (flip A Y)) $ f id
 ```
 
 If we find ourselves in a situation like @fig:yna-rule2-nex, not all is lost. Rule 3
 can sometimes be helpful:
 
 ```{design=code/Languages/And.hs label="Rule 3"}
-GoesTo (A (MV Club) (MV Diamond)) $ A (MV Diamond) (MV Club)
+GoesTo "Rule 3" (A (MV Club) (MV Diamond)) $ A (MV Diamond) (MV Club)
 ```
 
 In rule 3, we now have two placeholders --- &clubs; and &diams; --- each of
@@ -117,7 +164,7 @@ says we can swap what's on the left and the right of an arbitrary `A` node.
 This is illustrated by @fig:yna-rule3-ex.
 
 ```{#fig:yna-rule3-ex design=code/Languages/And.hs}
-let f x = x A (A Y N) N in GoesTo (f id) $ f flip
+let f x = x A (A Y N) N in GoesTo "Rule 3" (f id) $ f flip
 ```
 
 Note that rule 3 only moves the left sub-tree to the right, and vice versa. It

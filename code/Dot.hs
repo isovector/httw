@@ -24,17 +24,48 @@ newtype DotM a = DotM
 instance Show (DotM a) where
   show _ = "A tree"
 
+data Beside a
+  = Beside [a]
+  deriving stock (Eq, Ord, Show, Functor)
 
-data GoesTo a = GoesTo a a
+instance ToDot a => ToDot (Beside a) where
+  toDot (Beside ls) = do
+    names <- traverse (const $ fmap show fresh) ls
+    foldr1 f
+      $ fmap (uncurry cluster)
+      $ zip names
+      $ fmap toDot ls
+    where
+      f l r = do
+        ln <- toDot l
+        rn <- toDot r
+        sameRank [ln, rn]
+        pure rn
+
+
+data GoesTo a
+  = GoesTo String a a
+  | Cons String a (GoesTo a)
   deriving stock (Eq, Ord, Show, Functor)
 
 instance ToDot a => ToDot (GoesTo a) where
-  toDot (GoesTo l r) = do
-    ln <- cluster "Lhs" $ toDot l
+  toDot (GoesTo lbl l r) = do
+    lname <- fmap show fresh
+    rname <- fmap show fresh
+    ln <- cluster lname $ toDot l
     larr <- invisNode
     rarr <- invisNode
-    addEdge larr rarr
-    rn <- cluster "Rhs" $ toDot r
+    addLabeledEdge lbl larr rarr
+    rn <- cluster rname $ toDot r
+    sameRank [ln, larr, rarr, rn]
+    pure rn
+  toDot (Cons lbl l r) = do
+    lname <- fmap show fresh
+    ln <- cluster lname $ toDot l
+    larr <- invisNode
+    rarr <- invisNode
+    addLabeledEdge lbl larr rarr
+    rn <- toDot r
     sameRank [ln, larr, rarr, rn]
     pure rn
 
@@ -97,10 +128,12 @@ nodeName :: Node -> String
 nodeName = ('n' :) . show . unNode
 
 
+fresh :: DotM Int
+fresh = get <* modify' (+ 1)
+
 newNode :: String -> DotM Node
 newNode label = do
-  n <- fmap Node get
-  modify' (+ 1)
+  n <- fmap Node fresh
   tell $ pure $ nodeName n <> "[label=" <> show label <> "]"
   pure n
 
@@ -131,6 +164,11 @@ cluster label m = do
 addEdge :: Node -> Node -> DotM ()
 addEdge n1 n2 = do
   tell $ pure $ nodeName n1 <> " -> " <> nodeName n2
+
+
+addLabeledEdge :: String -> Node -> Node -> DotM ()
+addLabeledEdge lbl n1 n2 = do
+  tell $ pure $ nodeName n1 <> " -> " <> nodeName n2 <> "[label=" <> show lbl <> "]"
 
 
 __design

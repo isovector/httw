@@ -116,7 +116,9 @@ expressive tools of thought, which allow us to see at a glance the salient
 aspects of concepts. Here's an example of a diagram for a simple circuit:
 
 ```{#fig:not design=code/Design.hs label="A Diagram"}
-let { c :: Circuit (Named "Before" Bool) (Named "After" Bool); c = unsafeReinterpret >>> notGate >>> unsafeReinterpret } in c
+( unsafeReinterpret >>> notGate >>> unsafeReinterpret
+  :: Circuit (Named "Before" Bool) (Named "After" Bool)
+  )
 ```
 
 This diagram shows a very simple computation; it's the equivalent of flipping a
@@ -159,7 +161,9 @@ These findings are summarized in the following *function* table, which describes
 how the state of the light bulb changes after the circuit.
 
 ```{#fig:not_truth design=code/Design.hs fn=truth label="Function Table"}
-let { c :: Circuit (Named "Before" Bool) (Named "After" Bool); c = unsafeReinterpret >>> notGate >>> unsafeReinterpret } in c
+( unsafeReinterpret >>> notGate >>> unsafeReinterpret
+  :: Circuit (Named "Before" Bool) (Named "After" Bool)
+  )
 ```
 
 So far so good? Try this next diagram on for size, and attempt to decipher its
