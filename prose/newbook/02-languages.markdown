@@ -25,14 +25,10 @@ If &hearts; is a child of &otimes;, then, as you might expect, &otimes; is a
 *parent* of &hearts;. Likewise, we have the notions of *ancestors* and
 *descendants* in a tree.
 
-There is always exactly one node in a tree that has no parents. This node is
-special, and is called the *root* of the tree.
-
-Furthermore, we don't allow any "incestuous" relationships between nodes of a
-tree. Every node (except the root) must have exactly one parent, and it is not
-allowed to be one of its own descendants --- that is to say, no loops are
-allowed.
-
+We don't allow any "incestuous" relationships between nodes of a
+tree. Every node (except the "root" of the tree) must have exactly one parent,
+and it is not allowed to be one of its own descendants --- that is to say, no
+loops are allowed.
 
 To illustrate these two rules, *neither of @fig:not-a-tree-loop nor
 @fig:not-a-tree-parents are trees,* even though they look superficially similar
@@ -61,13 +57,8 @@ Beside
     a <- newNode "A"
     b <- newNode "B"
     c <- newNode "C"
-    addEdge a b
     addEdge a c
-    d <- newNode "D"
-    e <- newNode "E"
-    f <- newNode "F"
-    addEdge d e
-    addEdge d f
+    addEdge b c
     pure a
   ]
 ```
@@ -98,45 +89,71 @@ Beside
 ```
 
 That's enough theory for now. Let's play a little tree game. I will give you a
-tree, like @fig:yayan. The goal of the game is change the tree into the smallest
+tree, like @fig:yanay. The goal of the game is change the tree into the smallest
 one you can find.  But there's a trick --- you're only allowed to "reduce" the
 tree via a few, very specific rules. The tree I give you will only have nodes
 labeled `Y`, `N`, and `A`.
 
-```{#fig:yayan design=code/Languages/And.hs}
-A (A Y Y) N
+```{#fig:yanay design=code/Languages/And.hs}
+A Y (A N Y)
 ```
 
 Ready for the rules?
 
 ```{#fig:yna-rule1 design=code/Languages/And.hs label="Rule 1"}
-GoesTo "Rule 1" (A N N) N
+GoesTo "Rule 1" (AnyContext $ A N N) $ AnyContext N
 ```
 
-Rule 1 says that whenever you see a "sub-tree" that looks like the left-side
-of the diagram (let's call it "`NAN`" sub-tree), you can replace it with a
-single node labeled `N`. This sub-tree can appear *anywhere* in your tree!
+Rule 1 says that whenever you see a "sub-tree" that is an `A` node with two `N`
+children, you can replace it with a single node labeled `N`. The &hellip; node
+means that this rule can be used anywhere in the tree.
 
 To illustrate this, we could use rule 1 to make the following transformation:
 
 ```{#fig:yna-rule1-ex design=code/Languages/And.hs}
-let f x = A Y x in GoesTo "Rule 1" (f $ A N N) $ f N
+let f x = A (A Y Y) (A x (A Y Y)) in GoesTo "Rule 1" (f $ A N N) $ f N
 ```
+
+In @fig:yna-rule1-ex, we used rule 1 to *rewrite* the `NAN` sub-tree as just a
+single `N` node. Crucially, in doing so, the remainder of the tree stays exactly
+the same.
+
+Sometimes a single rule applies to multiple parts of the tree at once, like in
+@fig:yna-rule1-ex2, where we have two `NAN` sub-trees.
+
+```{#fig:yna-rule1-ex2 design=code/Languages/And.hs}
+A (A N N) (A N N)
+```
+
+When a situation like this arises, we can apply the rule at any place it
+matches. That is, both the trees in @fig:yna-rule1-ex2-results are appropriate
+"transitions," and you can go in whichever direction seems more promising to
+you.
+
+```{#fig:yna-rule1-ex2-results design=code/Languages/And.hs label="Possible transitions after @fig:yna-rule1-ex2"}
+Beside
+  [ A N (A N N)
+  , A (A N N) N
+  ]
+```
+
+Of course, nothing stops you from using the rule again immediately afterwards,
+if the other possibility is still a match.
 
 Let's move on to rule 2:
 
 ```{design=code/Languages/And.hs label="Rule 2"}
-GoesTo "Rule 2" (A Y (MV Club)) $ MV Club
+GoesTo "Rule 2" (AnyContext $ A Y (MV Club)) $ AnyContext $ MV Club
 ```
 
 What's this &clubs; doing here? Didn't I promise you that the only nodes in this
 game were `Y`, `N` and `A`? This &clubs; symbol is not a part of the real tree,
 it's a "placeholder" for *any sub-tree you want.* Whenever you apply rule 2, you
-can pick &clubs; to be anything at all!
+can pick &clubs; to be anything at all.
 
 In words, then, rule 2 says "we can remove the `A` and `Y` nodes if `Y` is on
 the left side." As an example, we could make transformation shown in
-@fig:yna-rule2-ex by letting &clubs; "fill in" for `NAN`:
+@fig:yna-rule2-ex by letting &clubs; "fill in" for `NAY`:
 
 ```{#fig:yna-rule2-ex design=code/Languages/And.hs}
 let f x = x (A N Y) in GoesTo "Rule 2" (f (A Y)) $ f id
@@ -155,7 +172,7 @@ If we find ourselves in a situation like @fig:yna-rule2-nex, not all is lost. Ru
 can sometimes be helpful:
 
 ```{design=code/Languages/And.hs label="Rule 3"}
-GoesTo "Rule 3" (A (MV Club) (MV Diamond)) $ A (MV Diamond) (MV Club)
+GoesTo "Rule 3" (AnyContext $ A (MV Club) (MV Diamond)) $ AnyContext $ A (MV Diamond) (MV Club)
 ```
 
 In rule 3, we now have two placeholders --- &clubs; and &diams; --- each of
@@ -185,52 +202,76 @@ RULE 5.
 :  You are not allowed to change the term in any way other than via rules 1-3.
 
 
-Let's take our example string, `YAYAN`, and play with these rules. Remember, the
-goal is to produce as short a term as possible. At any point, multiple rules
-might apply, and we can decide to follow any one of them. Because our string
-does not contain `NAN`, rule 1 does not apply. But both rule 2 and 3 are
-available to us.
+Let's look again at @fig:yanay (the "`YA(NAY)` tree,) and play with these rules.
+Remember, the goal is to produce as small a tree as possible. At any point,
+multiple rules might apply, and we can decide to follow any one of them. Because
+our tree does not contain `NAN`, rule 1 does not apply. But both rule 2 and 3
+are available to us.
 
-By choosing to follow different rules, we will get to different strings. Each of
-the three following strings can be produced:
+By choosing to follow different rules, we will get to different trees. Each of
+the three trees in @fig:yanay-next is possible.
 
-1. `YAN`, by following rule 2, and chopping off the initial `YA`.
-2. `YANAY`, by following rule 3 and pivoting around the *first* `A`.
-2. `NAYAY`, by following rule 3 and pivoting around the second `A` instead.
+```{#fig:yanay-next design=code/Languages/And.hs label="Possible transitions after @fig:yanay"}
+Beside
+  [ A N Y
+  , A (A Y N) Y
+  , A Y (A Y N)
+  ]
+```
+
+We can get to these trees in order by via the different routes:
+
+1. `NAY`, by following rule 2
+2. `(NAY)AY`, by following rule 3 and pivoting around the root `A`
+2. `YA(YAN)`, by following rule 3 and pivoting around the child `A` instead.
 
 Of these three, #1 is the shortest, so we might choose to explore rules
 accessible to us from that string. Picking the direction that moves us closest
 to the goal is called a *greedy* strategy, and it works better in same games
 than it does in others.
 
-From `YAN`, we only have two options:
+From `NAY`, our only option is rule 3, to transform the tree into `YAN`:
 
-1. `N` (rule 2)
-2. `NAY` (rule 3)
+```{#fig:nay-swap design=code/Languages/And.hs label="NAY to YAN"}
+GoesTo "Rule 3" (A N Y) (A Y N)
+```
 
-Because there is only one `A` in the string, we only have one possibility for
-rule 3.
+And from `YAN`, we can either apply rule 3 to swap into `NAY`, or we can apply
+rule 2 to get `N`. The former is clearly an unhelpful move, so we will decide to
+use rule 2 instead.
 
 Looking at `N`, no more rules apply, so we say that this string is in *normal
-form.*
-It can't go anywhere else, so if we ever get to `N`, we're stuck. There are some
-interesting questions here to ponder. Would all terminating sequences of rules
-have gotten us to this same place? Are there other normal forms? If so, how
-many are there? And perhaps most interestingly, *is there a faster way to
-get to a normal form?*
+form.* It can't go anywhere else, so if we ever get to `N`, we're stuck. But a
+tree with a single node is a very small tree indeed!
 
-See if you can come up with some answers to these questions. You will probably
-develop strong convictions after playing with a few more examples. However, not
-every combination of `A`, `N` and `Y` is allowed as a starting term; as I said
-earlier, these terms have a very particular form they must follow. We will
-discuss the form in a moment, but before then, try playing around with the valid
-starting strings `YAYAY`, `NANANAYAN` and `YANAYAYAYAYAYAYAN`.
+We can write out the *derivation* of our result by drawing out the intermediate
+trees, and the rules that we took along the way, like in @fig:yanay-deriv.
 
-If you've diligently worked through the these three terms, you probably came
-upon some answers to our earlier questions. It seems that every sequence of
-rules results in the same normal form, and that, at least in these examples,
-that normal form is always either `Y` or `N`. Perhaps you have even come up with
-a shortcut for getting to the normal form directly!
+```{#fig:yanay-deriv design=code/Languages/And.hs label="Derivation of `N`"}
+Cons "Rule 2" (A Y (A N Y))
+  $ Cons "Rule 3" (A N Y)
+  $ GoesTo "Rule 2" (A Y N) N
+```
+
+Now that the rules of the game are clear, try finding derivations to normal
+forms for the trees in @fig:and-more-starts on your own. While you work through
+them, pay close attention to the process.
+
+```{#fig:and-more-starts design=code/Languages/And.hs label="More starting trees"}
+Beside
+  [ A (A (A N N) Y) (A N N)
+  , A (A (A (A N N) Y) Y) Y
+  , A Y (A (A Y N) N)
+  , A (A Y (A Y Y)) (A (A Y Y) Y)
+  ]
+```
+
+If you've diligently worked through these four trees, you've probably noticed
+some things about the derivation process. For example, there never seems to be
+any `A` nodes left over when you get to a normal form. And that regardless of in
+what order you apply the rules, you always get to the same normal form from a
+given starting tree. Perhaps you even came up with some shortcuts for finding
+the normal form faster than by doing all the rules.
 
 Let's now discuss the form of the starting strings. You probably already have
 an intuition for what the rules of its "grammar" are, but we will write them
