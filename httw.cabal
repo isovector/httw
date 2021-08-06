@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 83a0df72e4b79982741c26d69a1d6a3af540d753330b84a1f0a34fb859d38c03
+-- hash: e15d0ccddd9a186cdd8cb74538cbf7f9e50adbf5cd6adac583cc684ca987f59b
 
 name:           httw
 version:        0.1.0.0
@@ -26,6 +26,7 @@ library
       Design
       Dot
       Languages.And
+      Languages.Math
       Take2.Computer.Addressed
       Take2.Computer.ALU
       Take2.Computer.Bus

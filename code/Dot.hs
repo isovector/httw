@@ -7,7 +7,7 @@ import Data.Bool (bool)
 import Data.List (group)
 import Data.Char (isAlphaNum)
 import System.Process (callProcess)
-import Data.Foldable (for_)
+import Data.Foldable (for_, foldrM)
 
 
 newtype DotM a = DotM
@@ -214,4 +214,13 @@ __makeFigName
   where
     go c | isAlphaNum c = c
     go _ = '_'
+
+
+makeTree :: ToDot a => String -> [a] -> DotM Node
+makeTree s as = do
+  n <- newNode s
+  ns <- traverse toDot as
+  foldrM (\a n' -> addEdge n' a >> pure n') n ns
+
+
 

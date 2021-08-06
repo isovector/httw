@@ -260,7 +260,7 @@ them, pay close attention to the process.
 ```{#fig:and-more-starts design=code/Languages/And.hs label="More starting trees"}
 Beside
   [ A (A (A N N) Y) (A N N)
-  , A (A (A (A N N) Y) Y) Y
+  , A (A (A N N) Y) Y
   , A Y (A (A Y N) N)
   , A (A Y (A Y Y)) (A (A Y Y) Y)
   ]
@@ -272,6 +272,8 @@ any `A` nodes left over when you get to a normal form. And that regardless of in
 what order you apply the rules, you always get to the same normal form from a
 given starting tree. Perhaps you even came up with some shortcuts for finding
 the normal form faster than by doing all the rules.
+
+<!--
 
 Let's now discuss the form of the starting strings. You probably already have
 an intuition for what the rules of its "grammar" are, but we will write them
@@ -306,14 +308,22 @@ Interestingly, the rules of our game all take grammatical strings to grammatical
 strings. If you start with a grammatical string, there is no way to produce an
 ungrammatical term by following the rules of the game.
 
-In playing with the examples, you might have noticed how some rules can be
-combined in order to save some work. For example, because `NAN` gets replaced
-with `N`, by taking a birds-eye view of the system, we can notice that *any*
-length of alternating `N`s and `A`s will reduce to a single `N`. Moves of this
-kind are called *combinators.* Combinators are not rules per se, but they are
-a sequence of rules combined. You'll get the same answer whether you replace all
-`NAN`s at once, or if you do them one at a time, but the first approach saves
-some time.
+-->
+
+For example, because `NAN` gets replaced with `N`, it's not too hard to show
+that any tree consisting only of `N` and `A` nodes will always reduce to a
+single `N`. Thus, we can reduce @fig:big-nan-gate in one step.
+
+```{#fig:big-nan-gate design=code/Languages/And.hs}
+GoesTo " " (A (A N (A N N)) N) N
+```
+
+Compound moves of this sort are called *combinators.* Combinators are not rules
+per se, but they are a sequence of rules combined. You'll get the same answer
+whether you replace all `NAN`s at once a la @fig:big-nan-gate, or if you do them
+one at a time --- though the first approach saves some time.
+
+<!--
 
 A more interesting combinator is that we can eliminate a `YA` from anywhere, not
 just at the beginning of the string. How? By being strategic with our pivoting.
@@ -351,6 +361,8 @@ normal form for any grammatical string. We can eliminate all `YA` and `AY`s,
 which will result in either a single remaining `Y`, or a string of `NAN`s, which
 can immediately collapsed into a single `N`.
 
+-->
+
 We can describe the behavior of this game thusly: a term's normal form is `N`
 if --- and only if --- the term contains one or more `N`s . Otherwise, the
 normal form is `Y`.
@@ -359,7 +371,7 @@ Perhaps you will be surprised to learn that this little game is played by
 executive boards and governmental committees all around the world. It's true!
 But in those contexts, this game is called "a unanimous vote." You can interpret
 a `Y` to be a "yea" vote, an `N` to be a "nay", and an `A` to mean "and". Thus,
-we can decipher `YANAY` as "yea and nay and yea."
+we can decipher `(YAN)AY` as "yea and nay and yea."
 
 Under this interpretation, the starting term corresponds to the votes of each
 member, and the normal form is whether or not the motion passed!
@@ -381,10 +393,69 @@ the problem. Thus, your solution to the problem can only ever be as good as your
 model. The most beautiful, elegant, economical solution in the world is of no
 use if it's for a problem you don't have.
 
-> TODO(sandy): next steps:
-> tie this to boolean algebra
-> show OR via duality
-> what's a game we can play with heyting algebra? 3sat?
+
+### Conceptualizing Trees
+
+Trees are often used to show hierarchies. You've likely seen the
+phylogenetic tree, used in biological circles to show how different lifeforms
+are related. In linguistics, parse trees are used to show which parts of a
+sentence belong to which part of the language's grammar. In mathematics,
+trees can be used to show in what order to perform arithmetic. An example of
+this is shown in @fig:tree-arith-ex, which corresponds to the expression
+$5 \times 7 + 5 - (10 - 4 \times 2)$.
+
+> TODO(sandy): add an image of a phylogenetic tree
+
+```{#fig:tree-arith-ex design=code/Languages/Math.hs}
+asMath $ 6 * 7 + 5 - (10 - 4 * 2)
+```
+
+When arithmetic is expressed as a tree, it is no longer necessary to remember
+the "order of operations" drilled into school children. There is no ambiguity in
+how to perform the arithmetic --- practitioners can simply start at the leaves
+of the tree and work upwards, like in @fig:tree-arith-eval.
+
+```{#fig:tree-arith-eval design=code/Languages/Math.hs}
+Cons     " " (asMath $ 6 * 7 + 5 - (10 - 4 * 2))
+  $ Cons " " (42 + 5 - (10 - 4 * 2))
+  $ Cons " " (42 + 5 - (10 - 8))
+  $ GoesTo "etc." (47 - (10 - 8)) 45
+```
+
+Since $5 \times 7 + 5 - (10 - 4 \times 2) = 45$, in some sense, we are justified
+in saying that @fig:tree-arith-eval also is *equal to* 45. Of course, this is
+fully dependent on what we mean by "equal!" Under the usual rules of arithmetic,
+there is clearly an equivalence between the two, but it would be wrong to say
+that @fig:tree-arith-eval is *exactly the same thing* as 45 --- after all, one
+is a drawing with circles and arrows, while the other is a number. As you can
+see, the idea of "equality" is actually quite tricky to pin down!
+
+> TODO(sandy): does this stuff re: equality belong here?
+
+Let's revisit the `YNA` game and do a little renaming. Instead of `Y` and `N`
+nodes, we'll write `1` and `0`. And instead of `A`, we'll write $times;. Let's
+call this variant the `10X` game. Then, the `(YAN)AY` derivation from
+@fig:yanay-deriv can be rewritten in the flavor of `10X` as
+@fig:yanay-math-deriv.
+
+```{#fig:yanay-math-deriv design=code/Languages/Math.hs label="Derivation of `0`"}
+Cons "Rule 2" (asMath $ 1 * (0 * 1))
+  $ Cons "Rule 3" (0 * 1)
+  $ GoesTo "Rule 2" (1 * 0) 0
+```
+
+What's interesting about `10X` is that all the rules correspond to simple
+algebraic truths. Rule 1 says $0 \times 0 = 0$, rule 2 that $1 \times x = x$,
+and rule 3 that $x \times y = y \times x$. So what does this mean? Is this just
+a coincidence? Was `YNA` just ciphered arithmetic this whole time? Neither ---
+it's not a coincidence, and `YNA` isn't just arithmetic. Rather, both `YNA` and
+arithmetic are just two different shadows on the cave wall. We will return to
+this discussion, to see just what is producing those shadows, in @sec:lattices.
+
+
+
+
+
 
 
 ### Revisiting YNA
