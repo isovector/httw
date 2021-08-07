@@ -452,6 +452,17 @@ it's not a coincidence, and `YNA` isn't just arithmetic. Rather, both `YNA` and
 arithmetic are just two different shadows on the cave wall. We will return to
 this discussion, to see just what is producing those shadows, in @sec:lattices.
 
+The important takeaway here is that different-looking systems are capable of
+solving similar problems. While `YNA` trees describe real-world unanimous votes,
+we can *model* that same process as statements of mathematics in `10X` trees.
+This process of modeling is of the utmost importance --- by being careful, we
+can design systems which describe real-world situations, but are manipulated
+symbolically. That's the key; it's easy to manipulate symbols, while it's much
+harder to keep lots of real-world details in mind simultaneously. Instead, the
+solution is to transform the real-world problem into a different language where
+we can reason about it formally, solve the problem in the model, and then
+transform the solution back into the real world.
+
 
 
 
