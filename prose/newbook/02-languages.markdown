@@ -456,6 +456,53 @@ solution is to transform the real-world problem into a different language where
 we can reason about it formally, solve the problem in the model, and then
 transform the solution back into the real world.
 
+In any case, we can think about this operation *abstractly.* The exact
+implementation details here are unimportant. Whether we are modeling
+multiplication, voting, or circuitry, what matters is that the system
+consistently behaves in the way we expect it to. "The purpose of abstraction, is
+not to be vague, but to create a new semantic level in which one can be
+absolutely precise," says Dijkstra. We don't need to care about exactly how the
+`YNA` game works, but merely that it does.
+
+To further drive this home, consider @gunji_robust_2012, in which researchers
+implemented the `YNA` game in the behavior of soldier crabs. Crabs walk
+sideways, rather famously. But when two of these crabs meet at an intersection,
+they will "swarm" together, and move in a predictable direction --- a direction
+different than either of the crabs' previous target. This behavior is shown in
+@fig:crabs-and.
+
+![Crabs meeting at an intersection will travel together](images/and-3.png){#fig:crabs-and}
+
+However, if a crab doesn't intersect with another, it will continue in it's
+original direction, like in @fig:crabs-id.
+
+![A crab will continue along its path if it doesn't encounter another.](images/and-4.png){#fig:crabs-id}
+
+
+In this sense, we can model an `N` as the absence of crabs, a `Y` as the
+presence of crabs, and an `A` node as one of these intersections. For example,
+in @fig:crabs-ex some crabs will be at &clubs; if and only if some started at
+&hearts;, moving in the direction of the arrow.
+
+![A crab will continue along its path if it doesn't encounter another.](images/and-5.png){#fig:crabs-ex}
+
+Why do we know this to be true? Because if there are not crabs starting at
+&hearts;, then the crabs on the left side of @fig:crabs-ex will have no crabs to
+swarm with, and will instead continue in their current direction, like in
+@fig:crabs-ex2.
+
+![A crab will continue along its path if it doesn't encounter another.](images/and-6.png){#fig:crabs-ex2}
+
+But it's rather messy to draw these diagrams of crab movement. So, perhaps you
+will agree that @fig:crabs-ex is equivalent to the tree in @fig:crab-tree-ex,
+where &clubs; corresponds to its normal form.
+
+```{#fig:crab-tree-ex design=code/Languages/And.hs}
+A (A Y Y) (MV Heart)
+```
+
+
+
 
 
 
