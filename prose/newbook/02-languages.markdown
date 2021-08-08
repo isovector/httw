@@ -1,12 +1,5 @@
 ## Languages
 
-This is a book primarily about designing big systems --- ones which, in some
-sense, are in cahoots with reality. Eventually we will build our way up to a
-computer, which, in an odd turn of fate, we will see is nothing more than a
-machine for evaluating the systems we've been building all along.
-
-<!-- TODO(sandy): terrible sentence, but hey, gotta start somewhere -->
-
 An extremely important idea in computer science is that of the tree. A tree
 look something like this:
 
