@@ -30,6 +30,10 @@ dependencies:
 - ghc-typelits-extra
 - QuickCheck
 - generic-arbitrary
+- diagrams-lib
+- diagrams-rasterific
+- diagrams-core
+- diagrams-contrib
 
 ghc-options:
   - -Wall

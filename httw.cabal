@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e15d0ccddd9a186cdd8cb74538cbf7f9e50adbf5cd6adac583cc684ca987f59b
+-- hash: 2f220327860c3da033e523d5ea9f33931c139ef72f76dda0d751c0aba34e0658
 
 name:           httw
 version:        0.1.0.0
@@ -26,6 +26,7 @@ library
       Design
       Dot
       Languages.And
+      Languages.Information
       Languages.Math
       Take2.Computer.Addressed
       Take2.Computer.ALU
@@ -106,6 +107,10 @@ library
     , circus
     , clash-prelude
     , containers
+    , diagrams-contrib
+    , diagrams-core
+    , diagrams-lib
+    , diagrams-rasterific
     , generic-arbitrary
     , ghc-typelits-extra
     , ghc-typelits-knownnat
