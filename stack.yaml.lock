@@ -5,6 +5,17 @@
 
 packages:
 - completed:
+    name: circuitry
+    version: 0.1.0.0
+    git: https://github.com/isovector/circuitry.git
+    pantry-tree:
+      size: 1719
+      sha256: 21fbdee4c43a1b64bfe1515f38edae61ba483b72f1aa4b381e58d06630f7902e
+    commit: 878752b47676ef2f56c1ba9fc1ad427074fd88bb
+  original:
+    git: https://github.com/isovector/circuitry.git
+    commit: 878752b47676ef2f56c1ba9fc1ad427074fd88bb
+- completed:
     hackage: circus-0.1.0.0@sha256:04f61dc224f97dfbc4e166cd45f4aa3b70ad11ff6419a00f1a8d13d1f7aa77db,1700
     pantry-tree:
       size: 431

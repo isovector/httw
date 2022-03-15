@@ -4,7 +4,8 @@ packages:
 - .
 
 extra-deps:
-- ../circuitry
+- git: https://github.com/isovector/circuitry.git
+  commit: 878752b47676ef2f56c1ba9fc1ad427074fd88bb
 - circus-0.1.0.0
 - unordered-containers-0.2.12.0
 - clash-prelude-1.4.1

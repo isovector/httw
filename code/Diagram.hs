@@ -20,7 +20,7 @@ __design (name, _, kvs) txt hash c = do
       label = fromMaybe txt $ lookup "label" kvs
       figname = bool name ("fig:" <> __makeFigName label)  $ name == ""
 
-  renderRasterific fp (dims 600) $ toDiagram c
+  renderRasterific fp (dims 150) $ toDiagram c
 
   putStrLn $
     mconcat ["![", label, "](", fp, "){#", figname , "}"]
