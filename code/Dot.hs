@@ -132,6 +132,7 @@ fresh :: DotM Int
 fresh = get <* modify' (+ 1)
 
 newNode :: String -> DotM Node
+newNode "" = shapedNode "point"
 newNode label = do
   n <- fmap Node fresh
   tell $ pure $ nodeName n <> "[label=" <> show label <> "]"
@@ -143,6 +144,13 @@ invisNode = do
   n <- fmap Node get
   modify' (+ 1)
   tell $ pure $ nodeName n <> "[style=\"invis\"]"
+  pure n
+
+shapedNode :: String -> DotM Node
+shapedNode shape = do
+  n <- fmap Node get
+  modify' (+ 1)
+  tell $ pure $ nodeName n <> "[shape=" <> show shape <> "]"
   pure n
 
 
@@ -221,6 +229,12 @@ makeTree s as = do
   n <- newNode s
   ns <- traverse toDot as
   foldrM (\a n' -> addEdge n' a >> pure n') n ns
+
+makeLabeledTree :: ToDot a => String -> [(String, a)] -> DotM Node
+makeLabeledTree s (unzip -> (lbs, as)) = do
+  n <- newNode s
+  ns <- traverse toDot as
+  foldrM (\(lbl, a) n' -> addLabeledEdge lbl n' a >> pure n') n $ zip lbs ns
 
 
 
