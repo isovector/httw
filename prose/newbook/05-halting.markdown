@@ -21,7 +21,7 @@ be made for how `P` is ungrammatical, we are left biting the bullet.
 
 In classical logic, the claim that every postulate is either true or false is
 known as the **law of the excluded middle.** It is alternatively stated as "if
-we know it is *not the case* that `Q` is *not true(, then `Q` must be true."
+we know it is *not the case* that `Q` is *not true*, then `Q` must be true."
 More formally, we can write
 
 $$
@@ -49,8 +49,8 @@ $$
 (P \to Q) \to (\neg Q \to \neg P)
 $$
 
-That is, if `P` implies `Q`, then $\not$`Q` surely implies $not$`P`. The trouble
-comes in when we do this move again:
+That is, if `P` implies `Q`, then not `Q` surely implies not `P`. The
+trouble comes in when we do this move again:
 
 $$
 (\neg Q \to \neg P) \to (\neg\neg P \to \neg\neg Q)
@@ -78,6 +78,55 @@ Perhaps this feels like a mathematical digression, but there is an important
 philosophical takeaway: some questions just can't be answered.
 
 
+### The Entscheidungsproblem
+
+While computers have been around only since the 1940s, computer programming is,
+amazingly, an older discipline. In 1928, David Hilbert posed the
+**Entscheidungsproblem,** asking for an automatic means of checking whether a
+particular mathematical proposition is true or false. That is, it should say
+"yes" when given the propositions
+
+$$
+\forall a b.\; a + b = b + a
+$$
+
+and
+
+$$
+\exists a.\; a + 2 \ge 7
+$$
+
+but should say "no" to
+
+$$
+\exists a.\; a = a + 1
+$$
+
+and
+
+$$
+5 = 10
+$$
+
+While these examples seem easy enough, the Entscheidungsproblem asks for an
+automatic means of checking *any* mathematical proposition. That it, it should
+be able to handle trickier problems too, like the following:
+
+$$
+\exists a b c d e x y z.\\
+(x \times a \times b) + (y \times b \times d) + (a \times b \times e)
+=
+((1 - x) \times a \times b) + (b \times y \times c) + (c \times d \times (1 - z))
+$$
+
+or even propositions that are too long to fit in this book. For problems of this
+size, it's clearly impossible to just "eyeball" it.
+
+Consider the importance of a solution to the Entscheidungsproblem.
+
+
+
+
 ### The Halting Problem
 
 Let's consider an analogous problem in computing. Is it necessarily so that
@@ -86,4 +135,24 @@ phrasing this is:
 
 > Is there a computer program which can definitively say whether some other
 > program will stop or run forever?
+
+```python
+def P(input):
+  if halts(P, input):
+    loop forever
+  else:
+    stop
+```
+
+This construction is analogous to the liar's paradox in the earlier section; `P`
+stops if and only if it doesn't stop. Thus, we are unable to give a definitive
+yes or no to whether or not an arbitrary program will halt. This result is known
+affectionately as **the halting problem** and is the most fundamental result in
+all of computing.
+
+Why does it matter? As it happens, we can shortcut a lot of work in showing
+other problems are impossible simply by proving a solution to them would be a
+solution to the halting problem. But of course, the halting problem is
+impossible, so any solution which would let us tackle the halting problem must
+itself be impossible.
 
