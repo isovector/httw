@@ -34,6 +34,9 @@ dependencies:
 - diagrams-rasterific
 - diagrams-core
 - diagrams-contrib
+- diagrams-graphviz
+- fgl
+- graphviz
 
 ghc-options:
   - -Wall

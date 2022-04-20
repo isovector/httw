@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e84ef6a0aa23e4a42e360e37d80df17dd4fec68fbb2807bd51b692d730f5a8e8
+-- hash: a901e7b286c2d5f163155fd6dec1f6811466779c577f6d4830c49e0f12c18472
 
 name:           httw
 version:        0.1.0.0
@@ -26,6 +26,7 @@ library
       Design
       Diagram
       Dot
+      GraphDot
       Languages.And
       Languages.Huffman
       Languages.Information
@@ -107,12 +108,15 @@ library
     , containers
     , diagrams-contrib
     , diagrams-core
+    , diagrams-graphviz
     , diagrams-lib
     , diagrams-rasterific
+    , fgl
     , generic-arbitrary
     , ghc-typelits-extra
     , ghc-typelits-knownnat
     , ghc-typelits-natnormalise
+    , graphviz
     , hashable
     , mtl
     , process

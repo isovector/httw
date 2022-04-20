@@ -18,7 +18,7 @@ __design
 __design (name, _, kvs) txt hash c = do
   let fp = hash <> ".png"
       label = fromMaybe txt $ lookup "label" kvs
-      figname = bool name ("fig:" <> __makeFigName label)  $ name == ""
+      figname = bool name ("fig:" <> __makeFigName label) $ name == ""
 
   renderRasterific fp (dims 150) $ toDiagram c
 
