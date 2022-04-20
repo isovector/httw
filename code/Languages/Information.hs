@@ -3,9 +3,10 @@ module Languages.Information where
 import Diagram
 import Diagrams.Prelude hiding (E)
 import Diagrams.Backend.Rasterific
+import GHC.Generics (Generic)
 
 data Division = N | W | E | S
-  deriving stock (Eq, Ord, Show, Enum, Bounded)
+  deriving stock (Eq, Ord, Show, Enum, Bounded, Generic)
 
 clear :: Diagram B
 clear = withEnvelope ((rect 1 1 # center :: Diagram B) ^. envelope) mempty

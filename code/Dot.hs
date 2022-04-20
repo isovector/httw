@@ -8,6 +8,7 @@ import Data.List (group)
 import Data.Char (isAlphaNum)
 import System.Process (callProcess)
 import Data.Foldable (for_, foldrM)
+import Types
 
 
 newtype DotM a = DotM
@@ -24,10 +25,6 @@ newtype DotM a = DotM
 instance Show (DotM a) where
   show _ = "A tree"
 
-data Beside a
-  = Beside [a]
-  deriving stock (Eq, Ord, Show, Functor)
-
 instance ToDot a => ToDot (Beside a) where
   toDot (Beside ls) = do
     names <- traverse (const $ fmap show fresh) ls
@@ -42,11 +39,6 @@ instance ToDot a => ToDot (Beside a) where
         sameRank [ln, rn]
         pure rn
 
-
-data GoesTo a
-  = GoesTo String a a
-  | Cons String a (GoesTo a)
-  deriving stock (Eq, Ord, Show, Functor)
 
 instance ToDot a => ToDot (GoesTo a) where
   toDot (GoesTo lbl l r) = do
@@ -69,10 +61,6 @@ instance ToDot a => ToDot (GoesTo a) where
     sameRank [ln, larr, rarr, rn]
     pure rn
 
-
-data Rose a = Pure a | Rose [Rose a]
-  deriving stock (Eq, Ord, Show, Functor)
-
 instance Show a => ToDot (Rose a) where
   toDot (Pure a) = newNode $ show a
   toDot (Rose ros) = do
@@ -82,15 +70,6 @@ instance Show a => ToDot (Rose a) where
     pure me
 
 
-
-data Metavar = Club | Diamond | Spade | Heart
-  deriving stock (Eq, Ord)
-
-instance Show Metavar where
-  show Club = "&clubs;"
-  show Diamond = "&diams;"
-  show Spade = "&spades;"
-  show Heart = "&hearts;"
 
 preamble :: [String]
 preamble =
