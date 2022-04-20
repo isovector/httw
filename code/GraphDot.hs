@@ -84,7 +84,7 @@ instance (Diagramize f, Diagramize g) => Diagramize (f :+: g) where
     emitEdge $ Edge n fn ""
     pure n
 
-instance (ToDiagram a) => Diagramize (K1 _1 a) where
+instance ToDiagram a => Diagramize (K1 _1 a) where
   diagramize = emitNode . sized (dims 10) . toDiagram . unK1
 
 
