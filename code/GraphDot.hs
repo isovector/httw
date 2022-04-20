@@ -1,9 +1,9 @@
-{-# OPTIONS_GHC -Wall #-}
 {-# LANGUAGE UndecidableInstances #-}
+
+{-# OPTIONS_GHC -fno-warn-orphans #-}
 
 module GraphDot where
 
-import Languages.Information
 import Diagrams.TwoD.GraphViz hiding (mkGraph)
 import Data.GraphViz.Attributes.Complete (GraphvizCommand(Dot))
 import GHC.Generics
