@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 565aedd7ea2301f4afe8ab6d43792056a810d4c892b20b4af963f16525a1b409
+-- hash: 44e1068b45627b670964f0ce33b870b93932664c2cc316c82d0b06aae87fd3a3
 
 name:           httw
 version:        0.1.0.0
@@ -34,6 +34,7 @@ library
       Take2.Computer.Math
       Take2.Computer.Simple
       TruthTable
+      Types
   other-modules:
       Paths_httw
   hs-source-dirs:

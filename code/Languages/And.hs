@@ -1,6 +1,7 @@
 module Languages.And where
 
 import Dot
+import Types
 
 data AndLang = Y | N | A AndLang AndLang | MV Metavar | AnyContext AndLang
   deriving stock (Eq, Ord)
