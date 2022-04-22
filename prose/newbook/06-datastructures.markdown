@@ -259,7 +259,97 @@ one second then organized as a binary tree. This is a dramatic improvement.
 ### Containers
 
 While there is a lot to say about the infinitude of ways for structuring data,
-such things are beyond the scope of this book.
+such things are beyond the scope of this book. For our purposes, we want to
+consider any sort of structure parameterized by the things it can contain.
+
+The important considerations of any data structure are how it can be built. As
+we saw for lists, the empty list is "already built" and we can lengthen a list
+by prepending a single element onto it. We can describe this "schema"
+pictorially like in @fig:schema_list:
+
+```{design=code/Dot.hs #fig:schema_list}
+compile "List &clubs;" $ SPlus
+  [ STimes "Nil" []
+  , SList $ Right Club :| [ Left "List &clubs;"]
+  ]
+```
+
+This picture represents exactly the schema of a list --- a list is either the
+empty list `Nil`, or it's some &clubs; item pointing to some other list (itself
+built in the same way.)
+
+We can give a schema for the binary tree as well:
+
+```{design=code/Dot.hs #fig:schema_search}
+compile "Search &clubs;" $ SPlus
+  [ STimes "Empty" []
+  , STimes "&clubs;" [Left "Search &clubs;", Left "Search &clubs;"]
+  ]
+```
+
+As you can see, the only structural difference between lists and binary trees is
+that lists have one arrow coming out of their &clubs; node, while binary trees
+have two.
+
+Schema diagrams like @fig:schema_list and @fig:schema_search are extremely
+helpful for getting quickly acquainted with new data structures. For example,
+let's consider a variant of the binary tree, as shown in @fig:schema_bin.
+
+```{design=code/Dot.hs #fig:schema_bin}
+compile "Bin &clubs;" $ SPlus
+  [ STimes "&clubs;" []
+  , STimes "Br" [Left "Bin &clubs;", Left "Bin &clubs;"]
+  ]
+```
+
+One way we might lay out our coworkers under the `Bin` &clubs; data structure is
+shown in @fig:peeps-bin.
+
+```{design=code/Dot.hs #fig:peeps-bin}
+Br
+  (Br (L "Brandon") (Br (L "Foggy") $ L "Gem"))
+  (Br (Br (L "Mika") (L "Pokey"))
+      (Br (L "Sierra") $ L "Vavilov" ))
+```
+
+Of course, @fig:peeps-bin is in no way unique; we could build an equivalent tree
+with all the same people shuffled around. Or, we could change the shape of the
+tree, like in @fig:peeps-bin2.
+
+```{design=code/Dot.hs #fig:peeps-bin2}
+Br
+  (Br (L "Gem") (Br (Br (L "Mika") $ L "Brandon") $ L "Vavilov"))
+  (Br (Br (L "Sierra") $ L "Pokey") (L "Foggy"))
+```
+
+@fig:peeps-bin2 contains all the same people as @fig:peeps-bin, but whether or
+not they have the same *informational content* depends on the interpretation of
+these diagrams. We will discuss interpretations more in @sec:interpretation.
+
+
+### Understanding Schemas
+
+You may have noticed &clubs; symbols littering all of our schema diagrams. What
+are those? Along with the other suites (&hearts;, &diamonds;, &spades;), these
+are called *metavariables.* Metavariables are placeholders for *anything at
+all.* We can replace metavariables with anything we like, so long as we replace
+*all the same metavariables* with the same thing. That is, we can replace
+&clubs; with 5 in "&clubs; + (2 + &clubs;)" resulting in `5 + (2 + 5)`. However,
+if more than one metavariable is present, we are free to replace the
+different metavariables with different things (though we can make the same
+choice for every metavariable!)
+
+What's really going on when we insert our coworkers into `List` &clubs; is we
+are making the choice to replace &clubs; with `Coworker`, and thus we've really
+made a `List Coworker` schema as in @fig:schema-list-coworker.
+
+```{design=code/Dot.hs #fig:schema-list-coworker}
+compile "List Coworker" $ SPlus
+  [ STimes "Nil" []
+  , SList $ Left "Coworker" :| [ Left "List Coworker"]
+  ]
+```
+
 
 ```{design=code/Dot.hs #fig:list-people-names}
 let peeps = ["Gem", "Mika", "Brandon", "Vavilov", "Sierra", "Pokey", "Foggy"]
@@ -281,13 +371,6 @@ applicatives
 compile $ SPlus
   [ STimes "Nil" []
   , STimes "Cons" [Right Heart, Left "List"]
-  ]
-```
-
-```{design=code/Dot.hs #fig:schema_cons}
-compile $ SPlus
-  [ STimes "Nil" []
-  , SList $ Right Heart :|  [Left "List"]
   ]
 ```
 

@@ -26,8 +26,8 @@ newtype DotM a = DotM
 instance Show (DotM a) where
   show _ = "A tree"
 
-compile :: Schema -> Beside (DotM Node)
-compile = Beside . go
+compile :: String -> Schema -> DotM Node
+compile lbl = cluster (Just lbl) . toDot . Beside . go
   where
     go s =
       case s of
@@ -45,10 +45,8 @@ showType (Right me) = show me
 
 instance ToDot a => ToDot (Beside a) where
   toDot (Beside ls) = do
-    names <- traverse (const $ fmap show fresh) ls
     foldr1 f
-      $ fmap (uncurry cluster)
-      $ zip names
+      $ fmap (cluster Nothing)
       $ fmap toDot ls
     where
       f l r = do
@@ -60,18 +58,15 @@ instance ToDot a => ToDot (Beside a) where
 
 instance (ToDot a, ToDot b) => ToDot (GoesTo a b) where
   toDot (GoesTo lbl l r) = do
-    lname <- fmap show fresh
-    rname <- fmap show fresh
-    ln <- cluster lname $ toDot l
+    ln <- cluster Nothing $ toDot l
     larr <- invisNode
     rarr <- invisNode
     addLabeledEdge lbl larr rarr
-    rn <- cluster rname $ toDot r
+    rn <- cluster Nothing $ toDot r
     sameRank [ln, larr, rarr, rn]
     pure rn
   toDot (Cons lbl l r) = do
-    lname <- fmap show fresh
-    ln <- cluster lname $ toDot l
+    ln <- cluster Nothing $ toDot l
     larr <- invisNode
     rarr <- invisNode
     addLabeledEdge lbl larr rarr
@@ -130,21 +125,20 @@ instance ToDot a => ToDot [a] where
     addEdge me n
     pure me
 
-instance Show a => ToDot (NonEmpty a) where
+instance ToDot a => ToDot (NonEmpty a) where
   toDot = go . toList
     where
       go [] = error "impossible"
-      go [a] = newNode $ show a
+      go [a] = toDot a
       go (a : as) = do
         n <- go as
-        me <- newNode $ show a
+        me <- toDot a
         addEdge me n
         pure me
 
 instance Show a => ToDot (Focused a) where
   toDot (Focused a) = do
-    lname <- fmap show fresh
-    cluster lname $ do
+    cluster Nothing $ do
       pointer <- invisNode
       n <- newNode $ show a
       addEdge pointer n
@@ -225,9 +219,11 @@ sameRank ns = do
   tell $ pure "}"
 
 
-cluster :: String -> DotM a -> DotM a
+cluster :: Maybe String -> DotM a -> DotM a
 cluster label m = do
-  tell $ pure $ "subgraph cluster" <> label <> " {"
+  name <- fmap (show . (+ (length $ show label))) fresh
+  tell $ pure $ "subgraph cluster" <> name <> " {"
+  tell $ pure $ "label = " <> maybe (show "") show label <> ";"
   r <- m
   tell $ pure "}"
   pure r
