@@ -4,6 +4,9 @@ import GHC.Generics
 import Data.List.NonEmpty
 import Data.Bool (bool)
 
+data Ctor = Ctor String | FakeCtor String
+  deriving stock (Eq, Ord, Show)
+
 data Beside a
   = Beside [a]
   deriving stock (Eq, Ord, Show, Functor, Foldable, Traversable)
@@ -50,7 +53,7 @@ data Fn a = Fn String [Var a]
 
 data Schema
   = SPlus [Schema]
-  | STimes String [Either String Metavar]
+  | STimes Ctor [Either String Metavar]
   | SList (NonEmpty (Either String Metavar))
   deriving stock (Eq, Ord, Show)
 

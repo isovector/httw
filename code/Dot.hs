@@ -26,17 +26,22 @@ newtype DotM a = DotM
 instance Show (DotM a) where
   show _ = "A tree"
 
+instance ToDot Ctor where
+  toDot (Ctor s) = ctorNode s
+  toDot (FakeCtor s) = newNode s
+
 compile :: String -> Schema -> DotM Node
 compile lbl = cluster (Just lbl) . toDot . Beside . go
   where
     go s =
       case s of
         SPlus scs -> scs >>= go
-        STimes str es -> pure $ do
-          ns <- traverse (newNode . showType) es
-          me <- newNode str
+        STimes ctor es -> pure $ do
+          ns <- traverse (shapedNode "rect" . showType) es
+          me <- toDot ctor
           for_ ns $ addEdge me
           pure me
+        -- TODO(sandy): bug. this should have a type box
         SList es -> pure $ toDot $ fmap showType es
 
 showType :: Either String Metavar -> String
@@ -78,7 +83,7 @@ instance ToDot a => ToDot (Rose a) where
   toDot (Pure a) = toDot a
   toDot (Rose ros) = do
     ns <- traverse toDot ros
-    me <- newNode "&otimes;"
+    me <- ctorNode "&otimes;"
     for_ ns $ addEdge me
     pure me
 
@@ -87,13 +92,13 @@ instance ToDot a => ToDot (Bin a) where
   toDot (Br l r) = do
     nl <- toDot l
     nr <- toDot r
-    me <- newNode "Br"
+    me <- ctorNode "Br"
     addEdge me nl
     addEdge me nr
     pure me
 
 instance ToDot a => ToDot (Search a) where
-  toDot Empty = newNode "Empty"
+  toDot Empty = ctorNode "Empty"
   toDot (Split a l r) = do
     nl <- toDot l
     nr <- toDot r
@@ -118,7 +123,7 @@ instance ToDot Double where
   toDot = newNode . show
 
 instance ToDot a => ToDot [a] where
-  toDot [] = newNode "Nil"
+  toDot [] = ctorNode "Nil"
   toDot (a : as) = do
     n <- toDot as
     me <- toDot a
@@ -190,11 +195,11 @@ fresh :: DotM Int
 fresh = get <* modify' (+ 1)
 
 newNode :: String -> DotM Node
-newNode "" = shapedNode "point"
-newNode label = do
-  n <- fmap Node fresh
-  tell $ pure $ nodeName n <> "[label=" <> show label <> "]"
-  pure n
+newNode "" = shapedNode "point" ""
+newNode label = shapedNode "oval" label
+
+ctorNode :: String -> DotM Node
+ctorNode = shapedNode "invhouse"
 
 
 invisNode :: DotM Node
@@ -204,11 +209,11 @@ invisNode = do
   tell $ pure $ nodeName n <> "[style=\"invis\";width=0.01]"
   pure n
 
-shapedNode :: String -> DotM Node
-shapedNode shape = do
+shapedNode :: String -> String -> DotM Node
+shapedNode shape label = do
   n <- fmap Node get
   modify' (+ 1)
-  tell $ pure $ nodeName n <> "[shape=" <> show shape <> "]"
+  tell $ pure $ nodeName n <> "[shape=" <> show shape <> ";label=" <> show label <> "]"
   pure n
 
 

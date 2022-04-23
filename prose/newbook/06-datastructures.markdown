@@ -269,9 +269,10 @@ pictorially like in @fig:schema_list:
 
 ```{design=code/Dot.hs #fig:schema_list}
 compile "List &clubs;" $ SPlus
-  [ STimes "Nil" []
+  [ STimes (Ctor "Nil") []
   , SList $ Right Club :| [ Left "List &clubs;"]
   ]
+
 ```
 
 This picture represents exactly the schema of a list --- a list is either the
@@ -282,9 +283,10 @@ We can give a schema for the binary tree as well:
 
 ```{design=code/Dot.hs #fig:schema_search}
 compile "Search &clubs;" $ SPlus
-  [ STimes "Empty" []
-  , STimes "&clubs;" [Left "Search &clubs;", Left "Search &clubs;"]
+  [ STimes (Ctor "Empty") []
+  , STimes (FakeCtor "&clubs;") [Left "Search &clubs;", Left "Search &clubs;"]
   ]
+
 ```
 
 As you can see, the only structural difference between lists and binary trees is
@@ -297,9 +299,10 @@ let's consider a variant of the binary tree, as shown in @fig:schema_bin.
 
 ```{design=code/Dot.hs #fig:schema_bin}
 compile "Bin &clubs;" $ SPlus
-  [ STimes "&clubs;" []
-  , STimes "Br" [Left "Bin &clubs;", Left "Bin &clubs;"]
+  [ STimes (FakeCtor "&clubs;") []
+  , STimes (Ctor "Br") [Left "Bin &clubs;", Left "Bin &clubs;"]
   ]
+
 ```
 
 One way we might lay out our coworkers under the `Bin` &clubs; data structure is
@@ -345,9 +348,10 @@ made a `List Coworker` schema as in @fig:schema-list-coworker.
 
 ```{design=code/Dot.hs #fig:schema-list-coworker}
 compile "List Coworker" $ SPlus
-  [ STimes "Nil" []
+  [ STimes (Ctor "Nil") []
   , SList $ Left "Coworker" :| [ Left "List Coworker"]
   ]
+
 ```
 
 
@@ -369,20 +373,8 @@ applicatives
 
 ```{design=code/Dot.hs}
 compile $ SPlus
-  [ STimes "Nil" []
-  , STimes "Cons" [Right Heart, Left "List"]
+  [ STimes (Ctor "Nil") []
+  , STimes (Ctor "Cons") [Right Heart, Left "List"]
   ]
-```
-
-```{design=code/GraphDot.hs}
-Br @Double (Br (L 0.5) (L 0)) (L 0.8)
-```
-
-```{design=code/GraphDot.hs}
-fmap asRed $ Br (Br (L 0.5) (L 0)) (L 0.8)
-```
-
-```{design=code/GraphDot.hs}
-fmap (Expand . asRed)  $ Br (Br (L 0.5) (L 0)) (L 0.8)
 ```
 
