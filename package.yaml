@@ -37,6 +37,7 @@ dependencies:
 - diagrams-graphviz
 - fgl
 - graphviz
+- colour
 
 ghc-options:
   - -Wall

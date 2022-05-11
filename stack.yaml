@@ -7,7 +7,7 @@ extra-deps:
 - git: https://github.com/isovector/circuitry.git
   commit: 878752b47676ef2f56c1ba9fc1ad427074fd88bb
 - circus-0.1.0.0
-- unordered-containers-0.2.12.0
+# - unordered-containers-0.2.12.0
 - clash-prelude-1.4.1
 - arrows-0.4.4.2@sha256:a260222b766da922657e302aa7c0409451913e1e503798a47a213a61ba382460,1235
 - Stream-0.4.7.2@sha256:ed78165aa34c4e23dc53c9072f8715d414a585037f2145ea0eb2b38300354c53,1009

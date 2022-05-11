@@ -7,7 +7,7 @@ PANDOC_OPTS := --highlight-style theme/highlighting.theme \
                --syntax-definition=theme/haskell.xml \
                --filter design-tools-exe \
                -F pandoc-crossref \
-               -F pandoc-citeproc \
+               --citeproc \
                --from markdown+fancy_lists \
                -s \
                --top-level-division=part

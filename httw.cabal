@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 44e1068b45627b670964f0ce33b870b93932664c2cc316c82d0b06aae87fd3a3
+-- hash: a82dfad592a67f9ebdea2ed5d37ef5701f35cc2adebc20dc0916acf5734b08ae
 
 name:           httw
 version:        0.1.0.0
@@ -28,9 +28,11 @@ library
       Dot
       GraphDot
       Languages.And
+      Languages.ColorWheel
       Languages.Huffman
       Languages.Information
       Languages.Math
+      Languages.Plane
       Take2.Computer.Math
       Take2.Computer.Simple
       TruthTable
@@ -98,6 +100,7 @@ library
     , circuitry
     , circus
     , clash-prelude
+    , colour
     , containers
     , diagrams-contrib
     , diagrams-core

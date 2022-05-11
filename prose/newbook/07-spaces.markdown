@@ -69,8 +69,16 @@ to different places on the globe. Though there are often "natural" choices for
 origins, the origin can always be chosen arbitrarily. The resulting system is
 always meaningful and coherent, though it isn't necessarily convenient.
 
+<!-- TODO(sandy): this stuff might be irrelevant if we just care about state spaces -->
 
 
+```{design=code/Languages/ColorWheel.hs}
+colorWheel 5 10 $ \h v -> sHSV h v 1
+```
+
+```{design=code/Languages/Plane.hs}
+plane 20 20 $ \h v -> sHSV h 1 v
+```
 
 
 color wheel

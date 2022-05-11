@@ -23,13 +23,6 @@ packages:
   original:
     hackage: circus-0.1.0.0
 - completed:
-    hackage: unordered-containers-0.2.12.0@sha256:164a47850c4536c8b7cc12f74578588cf3b6c331f04e671306d2dcb806284bb1,4978
-    pantry-tree:
-      size: 1388
-      sha256: 6c5fc0b867c11681dbadeb9cbcae10864abe3c5a4799410016c90871d3406c6e
-  original:
-    hackage: unordered-containers-0.2.12.0
-- completed:
     hackage: clash-prelude-1.4.1@sha256:5087cf27a64192b46c366b018774f4cf359a8115fd1b515f6d7b38ac279204d9,16120
     pantry-tree:
       size: 11631
