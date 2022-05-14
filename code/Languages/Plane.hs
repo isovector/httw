@@ -5,18 +5,35 @@ import Diagrams.Prelude hiding (ix, E, value)
 import Diagrams.Backend.Rasterific
 import Prelude hiding (tan)
 import Data.Colour.Names
-import Data.List (sortOn)
+import Data.List
+import Types
 
 plane :: Int -> Int -> (Double -> Double -> Colour Double) -> Diagram B
 plane m n f =
-  vcat $ do
+  center $ vcat $ do
     y <- [1 .. n]
     pure $ hcat $ do
       x <- [1 .. m]
       let xx = fromIntegral x / fromIntegral m
           yy = fromIntegral y / fromIntegral n
-          col = f xx yy
-      pure $ lc col $ fc col $ rect 1 1
+          col = f xx (1 - yy)
+      pure
+        $ named (ColorName col)
+        $ lc col
+        $ fc col
+        $ rect 1 1
+
+net :: Int -> Int -> (Double -> Double -> Double -> Colour Double) -> Diagram B
+net m n f = hsep 1
+  [ plane m n $ \b r -> f r 0 (1 - b)
+  , center $ vsep 1
+      [ plane m n $ \g b -> f 1 g b
+      , plane m n $ \g r -> f r g 0
+      , plane m n $ \g b -> f 0 g (1 - b)
+      ]
+  , plane m n $ \b r -> f r 1 b
+  , plane m n $ \g r -> f r (1 - g) 1
+  ]
 
 
 linear :: [(String, Colour Double)] -> Diagram B
@@ -33,15 +50,14 @@ mkText :: String -> Diagram B
 mkText = texterific
 
 
-main :: IO ()
-main
-  = renderRasterific "/tmp/diagram.png" (dims 300) $ linear $ take 25 $ reverse $ sortOn (length . fst) namedColors
-  -- $ plane m n
-  --     $ \(round . (* m) -> x) (round . (* n) -> y) -> namedColors !! (y * m + x)
-  --     -- $ \h v -> sHSV h 1 v
-  -- where
-  --   m = 1
-  --   n = 2
+-- main :: IO ()
+-- main
+--   = renderRasterific "/tmp/diagram.png" (dims 300) $ net 15 15 sRGB
+--   --     $ \(round . (* m) -> x) (round . (* n) -> y) -> namedColors !! (y * m + x)
+--   --     -- $ \h v -> sHSV h 1 v
+--   -- where
+--   --   m = 1
+--   --   n = 2
 
 namedColors :: (Ord a, Floating a) => [(String, Colour a)]
 namedColors =

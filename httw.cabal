@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: a82dfad592a67f9ebdea2ed5d37ef5701f35cc2adebc20dc0916acf5734b08ae
+-- hash: bf4eee90f1cd9c00cdb7e8718bf0eda0706d3f8f421f569268fd1cea0cc481e9
 
 name:           httw
 version:        0.1.0.0
@@ -116,4 +116,5 @@ library
     , hashable
     , mtl
     , process
+    , text
   default-language: Haskell2010

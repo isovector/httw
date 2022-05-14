@@ -8,7 +8,7 @@ PANDOC_OPTS := --highlight-style theme/highlighting.theme \
                --filter design-tools-exe \
                -F pandoc-crossref \
                --citeproc \
-               --from markdown+fancy_lists \
+               --from markdown+fancy_lists+yaml_metadata_block \
                -s \
                --top-level-division=part
 

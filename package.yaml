@@ -38,6 +38,7 @@ dependencies:
 - fgl
 - graphviz
 - colour
+- text
 
 ghc-options:
   - -Wall

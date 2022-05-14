@@ -22,4 +22,6 @@ clean:
 	rm *.aux || echo ""
 	rm *.pdf || echo ""
 	rm *.epub || echo ""
+	rm *.toc || echo ""
+	rm *.thm || echo ""
 
