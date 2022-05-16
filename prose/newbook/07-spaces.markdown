@@ -89,16 +89,16 @@ linear $ take 25 $ reverse $ sortOn (length . fst) namedColors
 ## Try again.
 
 The first step in solving any problem is to figure out what are the salient
-features of the thigngs under study. To work out an issue. we need to determine
+features of the things under study. To work out an issue. we need to determine
 *what the problem is,* and what a solution would look like. This is known in the
-jargon as **describing the problem space.** A space is a generalization of a
+jargon as **describing the problem space.** A *space* is a generalization of a
 physical space, like our everyday 3-dimensional world, coordinates on a map, or
 determining whether a new sofa will fit in the living room.
 
 A usually unstated assumption in the land of computation is that all problems
 are solvable. This attitude is often interpreted by outsiders as naivety; sure,
-maybe technical skills can help build bridges, but they're unlikely to solve
-political problems. I agree that this is unlikely, but not because the
+they say, maybe technical skills can help build bridges, but they're unlikely to
+solve human problems. I agree that this is unlikely, but not because the
 techniques are flawed, merely that we are unable to adequately define what the
 problem is, or what a solution might look like. It is fair to say that the
 problem space involving the messy world of humans and their psychology is
@@ -163,7 +163,7 @@ yellow.
 
 So, how can we do this? When in doubt, look to reality for inspiration. How do
 we humans perceive color? Inside of our retinas are photoreceptive cells called
-"cones." Cones come in three flavors: those that respond to red, those that
+*cones.* Cones come in three flavors: those that respond to red, those that
 respond to green, and those that respond to blue. Our eyes are literally
 incapable of seeing other colors, which should set off warning alarms in your
 head --- because clearly we *can* see other colors! The solution to this
@@ -174,33 +174,34 @@ The way it works is that our eyes respond to the levels of red, green and blue
 that they pick up, and then our brains fill in the missing information by
 "reading between the lines." When only the red cones are activated, we
 perceive red. When the red and green cones are activated to similar degrees, we
-experience yellow. Taking the "average" between these two experiences, that is,
+experience yellow. Taking the average between these two experiences, that is,
 fully active red cones, and half active green cones, results in the perception
 of orange.
 
 We can use this information to define a color space, using three coordinates
-which we will call `red`, `green`, and `blue`. Each coordinate can range from 0%
-to 100%, corresponding to how activated each of those cones "flavors" are when
-we look at the given color. Under such a system, we can move one "direction"
-along the `red` axis to increase the amount of red in the color, and move in a
-perpendicular direction `green` to increase the amount of green in the color.
-Likewise, for blue. We will call this the **RGB color space.**
+which we will call `R`, `G`, and `B` (for red, green and blue, respectively.)
+Each coordinate can range from 0% to 100%, corresponding to how activated each
+of those cones "flavors" are when we look at the given color. Under such a
+system, we can move one direction along the `R` axis to increase the amount of
+red in the color, and move in a perpendicular direction `G` to increase the
+amount of green in the color. Likewise, for blue. We will call this the **RGB
+color space.**
 
-Each of the `red`, `green` and `blue` axes are perpendicular to one another,
-that is to say, moving in one coordinate direction doesn't change your position
-in any of the others. You can imagine this like a room in your house. As you
-move left and right, you change how red you are. As you move forwards and
-backwards, you change how green you are. And as you move up and down, you change
-how blue you are. In such a room, @fig:plane-rg corresponds to the colors that
-lie along the floor (that is to say, with `blue` being held constant at 0%.)
+Each of the `RGB` axes are perpendicular to one another, that is to say, moving
+in one coordinate direction doesn't change your position in any of the others.
+You can imagine this like a room in your house. As you move left and right, you
+change how red you are. As you move forwards and backwards, you change how green
+you are. And as you move up and down, you change how blue you are. In such a
+room, @fig:plane-rg corresponds to the colors that lie along the floor (that is
+to say, with `B` being held constant at 0%.)
 
 ```{design=code/Languages/Plane.hs #fig:plane-rg}
 let f r g =  rgb r g 0 in plane 40 40 f
 ```
 
-When we allow `blue` to also vary, our space becomes a cube, with black in one
-corner (no `red`, `green` or `blue` activation), white in the opposite, as well
-as green (`color:green`), blue (`color:blue`), yellow (`color:yellow`), cyan
+When we allow `B` to also vary, our space becomes a cube, with black in one
+corner (no `R`, `G` or `B` activation), white in the opposite, as well as green
+(`color:green`), blue (`color:blue`), yellow (`color:yellow`), cyan
 (`color:cyan`) and magenta (`color:magenta`). This is a hard thing to illustrate
 in a book, but @fig:cube-rgb presents a "net" of the resulting color space that
 could be folded into a cube.
@@ -211,19 +212,22 @@ net 16 16  rgb
 
 Remember that this cube is entirely solid, full of less vibrant colors on the
 inside. Importantly for this example, all of our everyday intuitions about
-navigation hold in the RGB color space. That is, if we're looking for a color
+navigation hold in the `RGB` color space. That is, if we're looking for a color
 perceptually-between two other colors, we can simply pick a color
 spatially-between them. For example, there are no grays in @fig:cube-rgb, but we
 know that gray lies somewhere between black and white, thus, all grays must lie
 on the inside of the cube, along the diagonal that connects black to white.
 
-Armed with the RGB color space, our original problem of darkening a color has
+Armed with the `RGB` color space, our original problem of darkening a color has
 become more precise. We can now ask quantify the question to "*how dark* do you
-want it?" Because black lies in one corner of the cube, and that the RGB color
+want it?" Because black lies in one corner of the cube, and that the `RGB` color
 space preserves spatial notions, darkening a color is simply moving closer to
 the black corner.
 
-As you can see, introducing the RBG color space has both clarified and
+> TODO(sandy): after playing with this idea for a while, you can start to get a
+> feel for how to describe colors.
+
+As you can see, introducing the `RBG` color space has both clarified and
 simplified our original problem. By finding a "natural" way of describing color,
 we were able to rephrase the problem.
 
@@ -278,8 +282,6 @@ towards our ends.
 ```{design=code/Languages/Plane.hs #fig:cube-hsv}
 let f h = sHSV (h * 360) in net 16 16 f
 ```
-
-
 
 
 
