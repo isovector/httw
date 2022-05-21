@@ -143,6 +143,9 @@ reason about the system. Our machine will have three pairs of instructions:
   forward to just after the matching `]`
 * `]` --- move the instruction head back to the matching `[`
 
+> TODO(sandy): can just give a recipe here instead of introducing all these
+> symbols
+
 We can write a program to add the number on the data tape in position 1
 to the number in position 2 like this:
 
@@ -195,30 +198,91 @@ Unfortunately, to this day, the Turing machine is the conventional way of
 thinking about computation, and all of its challenges and complexities have come
 along for the ride.
 
+Of chief concern with the Turing machine is that the meaning of a program is
+implicit in its context. Recall that composition is the only strategy humans
+have for reasoning about complicated tasks. The Turing machine is antithetical
+to composition; implicit in every instruction is "where am I on the data tape,"
+the answer to which changes like the weather. We cannot take an arbitrary piece
+of a Turing program, move it elsewhere, and expect the meaning to remain the
+same.
+
+> TODO(sandy): what is meaning
+
+
+### Church
+
+The year prior to Turing's work, Alonzo Church published the Lambda calculus,
+his answer to the Entscheidungsproblem. The Lambda calculus is a system of
+computation based on the idea of substitution; programs are written with
+explicit holes that should be filled in, to be decided later. The newly filled
+holes might themselves contain holes, and the system continues filling holes
+until there is nothing left to do.
+
+We will come back to explore this idea more thoroughly in @sec:lambda, but to
+first get a taste of it, the following is a program in the Lambda calculus:
+
+```
+(λx y. f x y) (g f)
+```
+
+The `λx y` notation means "inside of these parentheses, `x` and `y` are two
+holes to be filled". The things we'd like to fill it with comes outside of the
+parentheses, in this case `(g f)`. Holes are filled one at a time, and a hole is
+always filled as soon as it is able. Thus, the above program is equal to the
+following, having replaced `x` with `(g f)`:
+
+```
+(λ y. f (g f) y)
+```
+
+Since we don't have anything to fill the `y` hole, it remains unfilled.
+
+The Lambda calculus takes nothing for granted, not even the existence of numbers
+(or equivalently, some set of symbols like in the Turing machine.) Instead, we
+can build numbers out of a pair of holes, `s` and `z`, which correspond
+mathematically to $1+$ and 0. For example, we can write the number 4 as $1+ (1+
+1+ (1+ 0))$, or, in the Lambda calculus, as `(λs z. s (s (s (s z))))`.
+
+For comparison to the Turing machine, we can look at the same addition simple
+program in Lambda calculus:
+
+```
+(λa b. (λs z. a s (b s z)))
+```
+
+This program cleverly replaces the meaning of 0 in the number `a` with the
+number `b`. Essentially, if we'd like to add 2 to 3, we encode 2 as normal via
+
+```
+(λs z. s (s z))
+```
+
+and replace its 0 with the number 3:
+
+
+```
+  (λs z. s (s 3))
+=
+  (λs z. s (s (s (s (s z)))))
+=
+  5
+```
+
+For now, it's not critical to deeply understand the mechanism behind the Lambda
+calculus. What's been presented here is merely a flavor of how computation can
+work differently than the "recipe" approach that is perhaps more natural to our
+everyday experience. The critical part of the Lambda calculus is that it is
+"movable" in a way that Turing machines are not. The meaning of any
+parenthesized expression of the Lambda calculus depends only on itself, not on
+the implicit position of some data tape. As a result, Lambda expressions are
+highly compositional; we can solve a problem in parts, and trivially glue the
+results together.
+
+> TODO(sandy): give an example of how we need to manipulate a turing program
+> when composing solutions
+
+> TODO(sandy): the construction of numbers here could use much more explanation.
+> start with that, replace s with 1+ and z with 0
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-- godel, church, turing all propose the same idea
-- history has followed turing here, but it's really interesting to see what
-  happens if we follow church
-- the systems are equivalent, as shown by a reduction from one to the other in
-  both ways
-  - in some sense this means we can "perfectly simulate" one idea on the other,
-    and thus any problem that can be solved by one can be solved by the other
-  - this is a common proof technique that we will use often in this book
-- by virtue of making the other choice, this book is going to come off WEIRD.
-  both in terms of its technical content, but also in terms of its philosophy
