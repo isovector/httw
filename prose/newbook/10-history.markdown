@@ -285,4 +285,192 @@ results together.
 > start with that, replace s with 1+ and z with 0
 
 
+### Try Again
+
+Like I said, there were three solutions to which problems the
+Entscheidungsproblem could answer. Turing's approach is one of them, but it's
+not the most elegant of the problems. That award goes to Alonzo Church's work,
+called the λ-calculus (pronounced "lambda".) λ-calculus has nothing to do with
+the calculus you learned in grade school, it's name comes from the fact that it
+is useful is "calculating" (or "computing") things.
+
+The elegance of the λ-calculus comes from how little it asks for. A Turing
+machine needs a collection of symbols, and two effectively-infinite tapes to
+store its data and its instructions --- no small ask! In comparison, all that is
+required in the λ-calculus are functions.
+
+Perhaps you remember from grade-school math the idea of a function, that is, a
+generator of arithmetic expressions. You probably spent countless hours
+evaluating and graphing functions like
+
+$$
+f(x) = x^2 - 9
+$$
+
+The idea is that $f$ transforms some number $x$ into the number $x^2 - 9$,
+simply by replacing $x$ with the number you pick. For example, we might pick $x
+= 5$, in which case $f$ sends $5$ to $5^2 - 9 = 16$.
+
+In the above, $f$ is merely the name of this transformation from $x$ to $x^2 -
+9$. It's often convenient to build nameless, anonymous functions, for which we
+use the funny notation:
+
+$$
+\lambda{}x \to x^2 - 9
+$$
+
+which means exactly the same thing, except didn't require us to have to come up
+with an arbitrary name like $f$.
+
+> TODO(sandy): function composition
+
+Functions in math class are very tied to numbers: they transform numbers into
+other numbers. But what would happen if we forgot about numbers, and instead
+made our functions work over other functions? Behold, the glorious idea behind
+λ-calculus. It's functions all the way down.
+
+In the λ-calculus, everything is built out of nothing but functions --- even
+numbers and other functions. It's a weird idea, but turns out to be immensely
+powerful because of it's extreme capabilities for composition. In a Turing
+machine, the programs are made out of a completely different thing than the data
+that the machine can manipulate. The only things we can manipulate in a Turing
+machine is the predefined collection of symbols on the data tape; and
+unfortunately, things we'd like to build on top of these symbols will always be
+"second-class" citizens. This seriously hampers any attempt to build big
+programs out of smaller ones, because we will never be able to extend our
+vocabulary.
+
+Programming on a Turing machine is a lot like trying to live in the modern
+world, restricting yourself only to words that exist in Latin. All of a sudden,
+we're unable to take a train, we must instead ride the self-propelled iron horse
+which travels only along two parallel lines. Certainly, you can get the job of
+communicating done, but it sure takes a lot of effort. Better just to add
+"train" to your vocabulary, and go from there.
+
+
+### Numbers
+
+Let's wet our whistle for the λ-calculus by seeing how to build numbers out of
+functions. Our journey will be rather roundabout, taking some philosophical
+detours, and really diving into what exactly is the essence of "numberness."
+
+The trick for constructing things out of functions is to ponder deeply about how
+those things can be made in the first place. In grade school we learn (perhaps
+implicitly) that exponentiation is simply repeated multiplication, while
+multiplication is just repeated addition. And addition, when you think about is,
+is just repeated counting. For example, you will agree that the following
+equation is true:
+
+$$
+5 + 3 = 5 + 1 + 1 + 1
+$$
+
+and, you will also not be surprised to learn that we can cancel the fives:
+
+$$
+3 = 1 + 1 + 1
+$$
+
+or that we can always add zero:
+
+$$
+3 = 1 + 1 + 1 + 0
+$$
+
+or even that we can introduce parentheses at will:
+
+$$
+3 = 1 + (1 + (1 + (0)))
+$$
+
+In fact, if we are patient enough, we can construct every non-negative,
+non-decimal number in this way. It's unbelievably tedious to do so, but we can
+indeed write 15 as
+
+$$
+1 + (1 + (1 + (1 + (1 + (1 + (1 + (1 + (1 + (1 + (1 + (1 + (1 + (1 + (1 + 0))))))))))))))
+$$
+
+but for the sake of sanity, let's go back to using three as the example. The
+last trick is to make two functions:
+
+$$
+s(x) = 1 + x
+$$
+
+$$
+z = 0
+$$
+
+It's rather odd to write three this way, but there's nothing wrong with it:
+
+$$
+3 = s(s(s(z)))
+$$
+
+Notice that under this scheme, we can encode any number $x$ as a series of
+nested $s$ functions ($x$-many of them), terminated finally by an inner-most
+$z$.
+
+> TODO(sandy): this might be nice with a history lesson on mr peano
+
+Have you ever wondered what exactly *is* a number? There is clearly something in
+common between having three coffees, writing three papers, and staying awake for
+three days. But what is that commonality? How can we get our hands on it? In
+fact, our above encoding of numbers as chains of $s$ and $z$ gives us hint.
+Notice that $s$ and $z$ are merely *symbols,* they have no meaning apart from
+that which we ascribe to them. I intentionally chose $s$ to suggest *succession*
+and $z$ to suggest *zero,* but those choices are not set in stone.
+
+What if we instead reinterpret $s$ as a transformation that takes a stomach to a
+stomach with another tomato in it, and $z$ as my stomach. Then $s(s(s(z)))$
+would mean "put three tomatoes inside my stomach." The three-ness of
+$s(s(s(z)))$ is thus *completely independent* of our choices of meaning for $s$
+and $z$.
+
+Whenever we see this pattern --- a choice needs to be made, but we don't care
+*which choice* --- the technique is to add a function that allows us to make
+that choice later. This leads us directly to our means of constructing numbers
+out of functions:
+
+$$
+0 = \lambda{}s z \to z
+\\ 1 = \lambda{}s z \to s z
+\\ 2 = \lambda{}s z \to s (s z)
+\\ 3 = \lambda{}s z \to s (s (s z))
+$$
+
+Under this scheme, there is a lovely little way to perform addition --- we
+merely replace the zero of the first number with the second:
+
+$$
+\lambda{}a b \to (\lambda s z \to a s (b s z))
+$$
+
+Just to convince ourselves that this works, we can look at the derivation that
+$3 + 1 = 4$:
+
+```{.haskell .proof}
+  plus 3 1
+= -- .via definition of plus
+  (λa b. (λs z. a s (b s z))) 3 1
+= -- .via applying 3
+  (λb. (λs z. 3 s (b s z))) 1
+= -- .via applying 1
+  (λs z. 3 s (1 s z))
+= -- .via definition of 3
+  (λs z. s (s (s (1 s z)))
+= -- .via definition of 1
+  (λs z. s (s (s (s z)))
+= -- .via definition of 4
+  4
+```
+
+It's quite remarkable that we've managed to discover a mathematical truth
+
+
+
+
+
+
 
