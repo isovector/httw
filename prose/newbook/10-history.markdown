@@ -435,9 +435,18 @@ out of functions:
 
 $$
 0 = \lambda{}s z \to z
-\\ 1 = \lambda{}s z \to s z
-\\ 2 = \lambda{}s z \to s (s z)
-\\ 3 = \lambda{}s z \to s (s (s z))
+$$
+
+$$
+1 = \lambda{}s z \to s z
+$$
+
+$$
+2 = \lambda{}s z \to s (s z)
+$$
+
+$$
+3 = \lambda{}s z \to s (s (s z))
 $$
 
 Under this scheme, there is a lovely little way to perform addition --- we
@@ -466,11 +475,33 @@ $3 + 1 = 4$:
   4
 ```
 
-It's quite remarkable that we've managed to discover a mathematical truth
+We won't belabor the point any further, since we'll return to this idea in
+@sec:lambda. The takeaway here is that we can indeed do computation in a way
+that is very unlike the traditional recipe-like programming that makes up the
+vast majority of computation today.
 
 
+## Logicism
 
+At the turn of the 20th century, mathematics was undergoing a dramatic
+transformation. The idea was simple, that all of mathematics could be reduced to
+mere logic. The idea was that logic and mathematics were, for all intents and
+purposes, equivalent, and thus that logic could be used to give a *foundation*
+mathematics.
 
+The desire was much akin to having an understanding of chemistry --- that we
+have different elements with different (but regular) properties --- but not
+having the physics to understand why it all fits together. This is the state
+mathematics was in around 1900, but with a burning desire to figure out why it
+all worked.
 
+The demand for a foundation for mathematics came, in part, from Bertrand
+Russell's paradox:
+
+> Pete is the barber who shaves the head of everyone who doesn't shave
+> themselves. Does Pete shave himself?
+
+Mathematics had gotten powerful enough to the point where it could express
+situations like the above, which spelled trouble. Either way you slice it, the
 
 
