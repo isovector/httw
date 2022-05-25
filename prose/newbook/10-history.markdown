@@ -502,6 +502,10 @@ Russell's paradox:
 > themselves. Does Pete shave himself?
 
 Mathematics had gotten powerful enough to the point where it could express
-situations like the above, which spelled trouble. Either way you slice it, the
+situations like the above, which spelled trouble. It's deeply reminiscent of
+Godel's liar paradox above, and as we will see, problems like this will continue
+to crop up.
+
+> TODO(sandy): what's the point?
 
 

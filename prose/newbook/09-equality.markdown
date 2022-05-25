@@ -93,5 +93,49 @@ constituent atoms in order to be certain we are truly indistinguishable at every
 level. Which might make it significantly more challenging to enjoy the money
 we've just withdrawn!
 
+We can construct new relations by choosing specific properties of an object, and
+comparing those with an existing equivalence relationship. Perhaps we'd like to
+determine whether a group of people is in danger for sun burns. A person is made
+up of lots of interesting properties that make them who they are. They have a
+name, an age, a country of origin, a life story, childhood traumas, moments of
+triumph, and a rich and complicated social network. But rather than looking at
+any of these things, we can instead ask the question "is this person wearing
+sunscreen?" and project a complicated question of equality down to a simple
+**YES**/**NO** binary. Everyone wearing sunscreen (that is, everyone in the
+**YES** category) belongs in one group, and everyone who isn't belongs in the
+other.
+
+Of course, discriminating people based on whether or not they are wearing
+sunscreen is a gross simplification of what it means to be human, but this sort
+of thing happens all the time. Folk psychology constantly projects complicated
+people down onto smaller equivalence classes --- for example, we sort people
+into whether they are **CAT** or **DOG** people, which political party they vote
+for, which of twelve astrological signs they have, or their Myers-Briggs types.
+
+It's easy to come up with some mutually exclusive set of labels (propositional
+equality), and project a complicated thing down into one of them. And this is
+often necessary --- but it's important to never confuse equivalence with
+equality! A particular equivalence class might be adequate for whatever use-case
+you have in mind, but you mustn't conflate equivalence in one domain with the
+same equivalence in another.
+
+
+### Other Equivalences
+
+Equality-like equivalences are not the only equivalences! One of the joys of
+mathematics is that once we have a definition in place, we are often pleasantly
+surprised to find other things that fit the definition.
+
+
+### Definitional vs Propositional Equality
+
+> TODO(sandy): get a real life example here
+
+As you can see, X isn't literally identical to Y. But every prediction we can
+make about X holds true in Y as well.
+
+
+### Properties of
+
 
 
