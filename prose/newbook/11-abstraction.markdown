@@ -96,11 +96,30 @@ left only with building such a thing mechanically. Like all the operations we've
 looked at before, meta-exponentiation has both a left- and a right-hand side,
 which we will call `a` and `b` respectively. However, meta-exponentiation also
 has a third setting, or parameter, which is the level of exponentiation we'd
-like.
+like. Let's pick the notation `hyper n a b` for this problem.
 
 It's traditional in mathematics to begin counting at zero, so we will choose
-level zero to be addition, level one to be multiplication, two to be
-(usual) exponentiation, and so on and so forth.
+level zero (that is, $n = 0$) to be addition, level one to be multiplication,
+two to be (usual) exponentiation, and so on and so forth. We can thus describe
+the rule that $n = 0$ corresponds to addition via:
+
+```haskell
+hyper 0 a b = a + b
+```
+
+The trick now is to determine how multiplication cashes out in terms of
+addition. That is, we can see the following expression always holds true:
+
+$$
+a \times b = a + a \times (b - 1)
+$$
+
+and of course, we also know that
+
+$$
+a \times 0 = 0
+$$
+
 
 ```haskell
 (+) a zero = a
@@ -122,4 +141,61 @@ f (suc n) a (suc b) = f n a (f (suc n) a b)
 ```
 
 
+### Spotting Structure
+
+The game of squinting and abstracting works all over the place. What does a city
+metro have in common with a population's social connections? One interesting
+feature is that both can be thought of as interconnected networks. The city
+metro is a number of stations joined by trains running between them, while a
+population is a number of people joined by social ties between them. Those
+social relationships might be "are friends" or "have dated" or really any
+distinction you might want to draw between two people.
+
+Of course, some social relationships might only work in one direction; if Joan
+is Gerald's best friend, that doesn't mean that Gerald is Joan's! This scenario
+doesn't often happen on the subway, but it does in road networks, where some
+streets are one-way only.
+
+Transportation systems and people are entirely different things in the real
+world, but if we ignore the vast majority of the details, they both look like
+interconnected networks. And doing this allows us to use metaphors from one
+domain in the other; that is, we can see how many "station hops" are required to
+get from one person to another, or we can see if any subway stations are "not
+dating anyone right now," or peculiar questions like those.
+
+One question that makes sense on the subway is "which two stations are the
+furthest away from one another." That notion of distance is not physical
+separation, but instead, which two stations require the most legs to get to
+traverse? An intriguing question if you're attempting to determine where to live
+after you've already got a job lined up!
+
+But this question is also interesting when transferred to the real of humans.
+Which two people are the furthest friendship hops away from one another? How
+big is that number of hops?
+
+Incidentally, this idea of an interconnected network is called a *graph.* The
+"people" of the graph are called its *nodes,* while the "friendships" are called
+its *edges.*Graphs show up everywhere, even if we need to build them for
+ourselves.
+
+Graphs don't need to exist physically. We can build a graph whose nodes are
+words, where two words share an edge if they differ by only one letter. For
+example, the following pairs words would have an edge:
+
+* `apple` - `apples`
+* `ear` - `far`
+* `crane` - `crate`
+
+but the following pairs would **not* have an edge:
+
+* `chapel` /- `rabbit`
+* `berry` /- `betsy`
+* `lead` /- `lede`
+
+What's the longest path on this graph? Are there any nodes which aren't
+connected to any other nodes?
+
+> TODO(sandy): is this an interesting question?
+
+> TODO(sandy): code it up and get an answer if it is
 
