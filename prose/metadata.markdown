@@ -1,8 +1,8 @@
 ---
-title: How These Things Work
-subtitle: Elegant Software from Simple Building Blocks
+title: Principia Cogitandi
+subtitle: Tools for Thought
 author: Sandy Maguire
-rights: © 2021 Sandy Maguire
+rights: © 2022 Sandy Maguire
 language: en-US
 book: true
 numbersections: true

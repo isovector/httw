@@ -168,10 +168,9 @@ so this is not a trivial problem. @loscher gives us a price point of \$3.11 per
 word send over telegram, which means sending this paragraph over the wire would
 cost \$171.
 
-TODO(sandy): CITE
-
-The Bolsheviks: Twilight of the Romanov Dynasty
-By John D. Loscher
+> TODO(sandy): CITE
+> The Bolsheviks: Twilight of the Romanov Dynasty
+> By John D. Loscher
 
 Reducing the costs here are clearly valuable goals for society. One way of doing
 that would be to build more telegram infrastructure, but that is possibly

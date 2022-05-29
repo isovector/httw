@@ -288,6 +288,8 @@ __makeFigName
     go c | isAlphaNum c = c
     go _ = '_'
 
+instance ToDot Char where
+  toDot = newNode . pure
 
 makeTree :: ToDot a => String -> [a] -> DotM Node
 makeTree s as = do

@@ -5,6 +5,7 @@ module Languages.Huffman where
 import Dot
 import Data.List (sortOn)
 import Data.Bifunctor (first)
+import Types
 
 mkHuffman :: [(DotM Node, Float)] -> DotM Node
 mkHuffman [] = pure $ Node 0
