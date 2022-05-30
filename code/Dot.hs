@@ -87,6 +87,14 @@ instance ToDot a => ToDot (Rose a) where
     for_ ns $ addEdge me
     pure me
 
+instance ToDot a => ToDot (LRose a) where
+  toDot (LPure a) = toDot a
+  toDot (LRose a ros) = do
+    ns <- traverse toDot ros
+    me <- toDot a
+    for_ ns $ addEdge me
+    pure me
+
 instance ToDot a => ToDot (Bin a) where
   toDot (L a) = toDot a
   toDot (Br l r) = do

@@ -3,8 +3,9 @@ module Languages.Math where
 
 import Dot
 import Data.String
+import Types
 
-data MathLang = Times MathLang MathLang | Plus MathLang MathLang | Subtract MathLang MathLang | Negate MathLang | Lift Int | MV String
+data MathLang = Times MathLang MathLang | Plus MathLang MathLang | Subtract MathLang MathLang | Negate MathLang | Lift Int | MV String | Equals MathLang MathLang
   deriving stock (Eq, Ord)
 
 instance Num MathLang where
@@ -25,6 +26,7 @@ instance Show MathLang where
   showsPrec _ (Negate a) = showString " - " . showsPrec 10 a
   showsPrec n (Lift i) = showsPrec n i
   showsPrec _ (MV s) = showString s
+  showsPrec n (Equals a b) = showParen (n > 0) $ showsPrec 0 a . showString "  = " . showsPrec 0 b
 
 instance ToDot MathLang where
   toDot (Times a b) =
@@ -33,6 +35,8 @@ instance ToDot MathLang where
     makeTree "+" [a, b]
   toDot (Subtract a b) = do
     makeTree "-" [a, b]
+  toDot (Equals a b) = do
+    makeTree "=" [a, b]
   toDot (Negate a) = do
     makeTree "-" [a]
   toDot (Lift n) = newNode $ show n

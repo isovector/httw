@@ -60,6 +60,9 @@ leaf a = Split a Empty Empty
 data Rose a = Pure a | Rose [Rose a]
   deriving stock (Eq, Ord, Show, Functor, Generic, Generic1, Foldable, Traversable)
 
+data LRose a = LPure a | LRose a [LRose a]
+  deriving stock (Eq, Ord, Show, Functor, Generic, Generic1, Foldable, Traversable)
+
 data Metavar = Club | Diamond | Spade | Heart
   deriving stock (Eq, Ord, Generic)
 
