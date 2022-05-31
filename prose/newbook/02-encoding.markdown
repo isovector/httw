@@ -215,5 +215,76 @@ let { sub =
  in GoesTo " " (focus "Richard" org) (fmap Unfocused sub)
 ```
 
+A more "constructive" way of saying the same thing is that we can build bigger
+trees out of smaller ones. The specific details about doing so depend on the
+purpose of the tree --- for example, there are no rules in general about
+building org-charts, but in a mathematical equation tree, we'd like there to be
+only one `=` node, and we'd like for it to be at the root of the tree! After
+all, it's meaningless to build mathematical expressions like $(5 = 8) + 3$.
+
+
+### Inverses and Isomorphisms
+
+In the next section, we'll discuss how to design an algorithm for encoding
+arbitrary trees --- that is, on designing a "writing system" for articulating
+ideas about trees in succinct ways. But before getting into the weeds, it's
+important to first discuss why we'd want to do such a thing, and the important
+considerations to keep in mind.
+
+The purpose of a writing system is to be able to preserve ideas throughout time.
+That is, once I have an idea, I am afforded the ability to write it down, forget
+about it, and read the idea back later. Since human brains are incapable of
+keeping very much in active memory, this system allows me to do some thinking,
+write down a partial answer, think about something else, and then come back to
+the original problem at a later time --- perhaps after having done some
+ancillary thinking relating to the same topic!
+
+It's no accident that philosophy sprung up as a discipline only after writing
+systems did; the ideas philosophy tries to tackle are too big to fit inside of
+our skulls all at once. The same is true of most of the modern world. Writing
+(but not necessarily prose) is an essential extension of our brain.
+
+Implicit in this capability is writing and reading are two halves of the same
+coin. A writing system is of no use to us if we are unable to read it back
+later. In fact, we'd like to go further, and say that (ideally) after reading,
+the contents of our mind should be *exactly* what they were when we did the
+writing.
+
+Another way of saying that is:
+
+> The idea we get from reading is the same one we wrote down.
+
+Or even, for any particular thought $i$, we'd like to be able to say:
+
+$$
+\text{read} (\text{write } i) = i
+$$
+
+A closely related idea to this, perhaps more appropriate for medieval scribes,
+is that writing out an idea that you just read should result in the same piece
+of text! This exact mechanism is how most books were copied throughout the ages.
+Symbolically, for any piece of text $t$, we can write:
+
+$$
+\text{write} (\text{read } t) = t
+$$
+
+We use this mathematical notation because these statements truly are equations.
+They're not equations about *numbers*, but they are equations nevertheless!
+Together, the two equations express the sentiment that reading and writing are
+"opposites" of one another, and that we can move back and forth between ideas
+and text without losing anything in the process.
+
+Of course, this isn't strictly true about human minds; we're complicated
+creatures with unpredictable responses to stimuli. But it's not hard to imagine
+that these equations are true of a computer: the computer can write data to a
+disk, and subsequently read that data back into memory without having lost any
+of the information in the process.
+
+Together, we say that `read` and `write` are inverses of one another.
+
+
+### Encoding Trees
+
 
 

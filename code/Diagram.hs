@@ -26,7 +26,7 @@ __design (name, _, kvs) txt hash c = do
   renderRasterific fp (dims 150) $ toDiagram c
 
   putStrLn $
-    mconcat ["![", T.unpack (T.replace "\n" " " $ T.pack label), "](", fp, "){#", figname , "}"]
+    mconcat ["![ ](", fp, "){#", figname , "}"]
 
 trim :: String -> String
 trim = dropWhile (== ' ') . dropWhileEnd (== ' ')

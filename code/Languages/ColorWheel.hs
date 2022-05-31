@@ -1,17 +1,18 @@
 module Languages.ColorWheel where
 
-import           Data.Colour.RGBSpace.HSV (hsvView, value)
+import           Data.Colour.RGBSpace.HSV (hsvView)
 import           Data.Colour.SRGB.Linear (rgb, toRGB)
-import           Data.Function (on)
-import           Data.List (sortOn)
-import           Data.Set (Set)
-import qualified Data.Set as S
-import           Data.Typeable
 import           Diagram
 import           Diagrams.Backend.Rasterific
 import           Diagrams.Prelude hiding (ix, E, value, deg)
 import           Types
 
+wedg
+    :: (TrailLike t, RealFloat (N t), Integral a, V t ~ V2)
+    => a
+    -> Direction V2 (N t)
+    -> N t
+    -> t
 wedg y dir arcwidth =
   annularWedge
     (fromIntegral y + 1)

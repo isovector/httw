@@ -284,7 +284,7 @@ __design (name, _, kvs) _ hash a = do
     ]
 
   putStrLn $
-    mconcat ["![", label, "](", fp, "){#", figname , "}"]
+    mconcat ["![ ](", fp, "){#", figname , "}"]
 
 
 __makeFigName :: String -> String
