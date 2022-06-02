@@ -286,5 +286,108 @@ Together, we say that `read` and `write` are inverses of one another.
 
 ### Encoding Trees
 
+We turn our attention to finding a means of encoding trees.
+
+```{#fig:life design=code/Dot.hs}
+LRose "Life"
+  [ LRose "Archaea"
+      [ LPure "Haloarchaea"
+      , LPure "Methanosarcina"
+      ]
+  , LRose "Bacteria"
+      [ LPure "Aquifex"
+      , LPure "Cyanobacteria"
+      ]
+  , LRose "Eukaryota"
+      [ LRose "Animalia"
+        [ LPure "Arthropoda"
+        , LPure "Annelid"
+        , LRose "Mollusca"
+          [ LPure "Cephalopod"
+          ]
+        ]
+      , LPure "Fungi"
+      , LPure "Plantae"
+      ]
+  ]
+```
+
+We'd like to find a way to embed @fig:life into a series of words and symbols,
+such that we can "read" it back into the same tree. In essence, the problem here
+is to find a way of flattening out the tree, without losing any information. One
+obvious idea is to split the tree into its tiers --- `Life` in one tier, and
+`Archaea`, `Bacteria` and `Eukaryota` into the next --- and then embed those,
+one after another. The result is:
+
+> Life
+> Archaea Bacteria Eukaryota
+> Haloarchaea Methanosarcina Aquifex Cyanobacteria Animalia Fungi Plantae
+> Arthropoda Annelid Mollusca
+> Cephalopod
+
+This is certainly a projection of our tree down into text --- but is it a proper
+embedding? Can we subsequently "read" back the tree into its original form?
+Unfortunately, this approach doesn't seem to work, because we don't know where
+to form the subtrees. If I were ultimately antagonistic, I could read back this
+encoding as a flat tree like in @fig:bad-flat-life.
+
+```{#fig:bad-flat-life design=code/Dot.hs}
+LRose "Life"
+  [ LPure "Archaea"
+  , LPure "Bacteria"
+  , LPure "Eukaryota"
+  , LPure "Haloarchaea"
+  , LPure "Methanosarcina"
+  , LPure "Aquafex"
+  , LPure "..."
+  ]
+```
+
+In order to prevent some sort of adversarially, intentionally
+maximally-misunderstanding entity from getting the wrong idea, we clearly need
+to encode more of the tree "structure." We can try arbitrary ideas all day long
+until the cows come home, but befitting our need to encode more structure,
+perhaps we should take a more structured approach.
+
+A tree is made out of two things; a root node, and its sub-trees. We can encode
+the root node as we were before, and then encode each of its sub-trees
+immediately, one after another. It's important to keep track of where each
+sub-tree begins and ends, so we can take a hint from mathematics and use
+parentheses to "scope" each sub-tree.
+
+We've said we can embed a tree by embedding its sub-trees, but isn't that just
+passing the buck? How do we encode a sub-tree? Here's the beautiful part.
+Remember that all trees are constructed out of smaller trees, thus, we can embed
+a sub-tree in the same way --- write down its "root," and followed by each of
+its sub-trees! We can follow this strategy all the way through the tree, working
+on smaller and smaller sub-trees until there is no more work to be done.
+
+When this algorithm is performed over the above tree, we get the following:
+
+```
+Life
+  (Archaea
+    (Haloarchaea)
+    (Methanosarcina))
+  (Bacteria
+    (Aquifex)
+    (Cyanobacteria))
+  (Eukaryota
+    (Animalia
+      (Arthropoda)
+      (Annelid)
+      (Mollusca
+        (Cephalopod)))
+    (Fungi)
+    (Plantae))
+```
+
+The white space here is merely formatting for our benefit. The human eye is well attuned to visual organization, but this is superfluous to the problem. The tree structure we'd like to encode is entirely captured by the parentheses:
+
+```
+Life (Archaea (Haloarchaea) (Methanosarcina)) (Bacteria (Aquifex)
+(Cyanobacteria)) (Eukaryota (Animalia (Arthropoda) (Annelid) (Mollusca
+(Cephalopod))) (Fungi) (Plantae))
+```
 
 
