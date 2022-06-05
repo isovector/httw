@@ -20,6 +20,7 @@ import           Data.Typeable
 import           Diagrams.Backend.Rasterific (B)
 import           Diagrams.Prelude hiding (Empty, value)
 import           GHC.Generics
+import Data.String (IsString, fromString)
 
 
 sHSV :: (Floating b, RealFrac b) => b -> b -> b -> Colour b
@@ -62,6 +63,15 @@ data Rose a = Pure a | Rose [Rose a]
 
 data LRose a = LPure a | LRose a [LRose a]
   deriving stock (Eq, Ord, Show, Functor, Generic, Generic1, Foldable, Traversable)
+
+instance IsString a => IsString (LRose a) where
+  fromString = LPure . fromString
+
+instance (b ~ [LRose a], IsString a) => IsString (b -> LRose a) where
+  fromString a x = LRose (fromString a) x
+
+asRose :: LRose String -> LRose String
+asRose = id
 
 data Metavar = Club | Diamond | Spade | Heart
   deriving stock (Eq, Ord, Generic)

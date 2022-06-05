@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: bf4eee90f1cd9c00cdb7e8718bf0eda0706d3f8f421f569268fd1cea0cc481e9
+-- hash: d9505bed22e6bbfb948b3a698e883b5ad1de91f0e67b38e6c5655e49065ad271
 
 name:           httw
 version:        0.1.0.0
@@ -92,6 +92,7 @@ library
       InstanceSigs
       RoleAnnotations
       NoMonomorphismRestriction
+      OverloadedStrings
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-uni-patterns -Wincomplete-record-updates -Wredundant-constraints -fhide-source-paths -Wpartial-fields -Wmissing-deriving-strategies -fplugin GHC.TypeLits.Extra.Solver -fplugin GHC.TypeLits.KnownNat.Solver -fplugin GHC.TypeLits.Normalise
   build-depends:
       QuickCheck

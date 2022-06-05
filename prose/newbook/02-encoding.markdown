@@ -135,16 +135,16 @@ necessarily in practice! An example org-chart is given in @fig:org-chart.
 
 
 ```{#fig:org-chart design=code/Dot.hs}
-LRose "Alan"
-  [ LRose "Richard"
-      [ LRose "Lisa" [LPure "Parson", LPure "Siobhan"]
-      , LPure "Raymond"
+asRose $ "Alan"
+  [ "Richard"
+      [ "Lisa" ["Parson", "Siobhan"]
+      , "Raymond"
       ]
-  , LRose "Veronica"
-      [LPure "Cynthia", LPure "Mark"]
-  , LRose "Victor"
-      [LPure "Michael", LPure "Tev"]
-  , LPure "Wanda"
+  , "Veronica"
+      ["Cynthia", "Mark"]
+  , "Victor"
+      ["Michael", "Tev"]
+  , "Wanda"
   ]
 ```
 
@@ -198,19 +198,18 @@ thought of as independent entities.
 
 
 ```{#fig:suborg design=code/Dot.hs}
-let { sub =
-      LRose "Richard"
-        [ LRose "Lisa" [LPure "Parson", LPure "Siobhan"]
-        , LPure "Raymond"
+let { sub = asRose $
+        "Richard"
+        [ "Lisa" ["Parson", "Siobhan"]
+        , "Raymond"
         ];
-    org =
-      LRose "Alan"
+    org = "Alan"
         [ sub
-        , LRose "Veronica"
-            [LPure "Cynthia", LPure "Mark"]
-        , LRose "Victor"
-            [LPure "Michael", LPure "Tev"]
-        , LPure "Wanda"
+        , "Veronica"
+            ["Cynthia", "Mark"]
+        , "Victor"
+            ["Michael", "Tev"]
+        , "Wanda"
         ] }
  in GoesTo " " (focus "Richard" org) (fmap Unfocused sub)
 ```
@@ -289,25 +288,25 @@ Together, we say that `read` and `write` are inverses of one another.
 We turn our attention to finding a means of encoding trees.
 
 ```{#fig:life design=code/Dot.hs}
-LRose "Life"
-  [ LRose "Archaea"
-      [ LPure "Haloarchaea"
-      , LPure "Methanosarcina"
+asRose $ "Life"
+  [ "Archaea"
+      [ "Haloarchaea"
+      , "Methanosarcina"
       ]
-  , LRose "Bacteria"
-      [ LPure "Aquifex"
-      , LPure "Cyanobacteria"
+  , "Bacteria"
+      [ "Aquifex"
+      , "Cyanobacteria"
       ]
-  , LRose "Eukaryota"
-      [ LRose "Animalia"
-        [ LPure "Arthropoda"
-        , LPure "Annelid"
-        , LRose "Mollusca"
-          [ LPure "Cephalopod"
+  , "Eukaryota"
+      [ "Animalia"
+        [ "Arthropoda"
+        , "Annelid"
+        , "Mollusca"
+          [ "Cephalopod"
           ]
         ]
-      , LPure "Fungi"
-      , LPure "Plantae"
+      , "Fungi"
+      , "Plantae"
       ]
   ]
 ```
@@ -332,14 +331,14 @@ to form the subtrees. If I were ultimately antagonistic, I could read back this
 encoding as a flat tree like in @fig:bad-flat-life.
 
 ```{#fig:bad-flat-life design=code/Dot.hs}
-LRose "Life"
-  [ LPure "Archaea"
-  , LPure "Bacteria"
-  , LPure "Eukaryota"
-  , LPure "Haloarchaea"
-  , LPure "Methanosarcina"
-  , LPure "Aquafex"
-  , LPure "..."
+asRose $ "Life"
+  [ "Archaea"
+  , "Bacteria"
+  , "Eukaryota"
+  , "Haloarchaea"
+  , "Methanosarcina"
+  , "Aquafex"
+  , "..."
   ]
 ```
 
@@ -382,12 +381,76 @@ Life
     (Plantae))
 ```
 
-The white space here is merely formatting for our benefit. The human eye is well attuned to visual organization, but this is superfluous to the problem. The tree structure we'd like to encode is entirely captured by the parentheses:
+The white space here is merely formatting for our benefit. The human eye is well
+attuned to visual organization, but this is superfluous to the problem. The tree
+structure we'd like to encode is entirely captured by the parentheses:
 
 ```
 Life (Archaea (Haloarchaea) (Methanosarcina)) (Bacteria (Aquifex)
 (Cyanobacteria)) (Eukaryota (Animalia (Arthropoda) (Annelid) (Mollusca
 (Cephalopod))) (Fungi) (Plantae))
 ```
+
+Encoding trees like this brings about an interesting question: if a node has
+multiple sub-trees, in which order should we encode them? Thus far we have
+always written the sub-trees out left-to-right in the order that they appear on
+the page. But recall that the presentation of a tree, as ink on paper, is merely
+a projection of the ideal, platonic tree that we have in mind.
+
+Nowhere in our discussion of trees have we mentioned that the children of a node
+are in any particular order! We have mistaken the map for the territory: our
+implicit assumptions about trees have been formed via analogy, and those
+assumptions were misleading.
+
+Of course, when we present a tree, either in the form of a diagram, or in the
+nested parenthetical form above, we must make concessions; by virtue of being
+spatial (and legible), a node's children must be in different places. And one of
+those must be in a place that feels more natural to think of as being "first"
+--- but this is merely an illusion. It's like being surprised that the name of a
+street isn't magically floating in front of you as walk around a city. Just
+because floating street names are a property of the map doesn't mean they
+necessarily exist in the territory itself!
+
+We are thus left with an uncomfortable decision; we can decide that the order of
+our nodes' children is in someway meaningful, or we can decide that it isn't. If
+we choose the latter, we are forced to concede that a tree does not have a
+unique embedding! For example, @fig:bst has the nice property that every node in
+the left sub-tree is smaller than the root, while every node in the right is
+bigger than the root:
+
+
+```{#fig:bst design=code/Dot.hs}
+asRose $ "5"
+  [ "2" [ "1", "4" ]
+  , "10"
+    [ "9"
+    , "13" [ "11", "14" ]
+    ]
+  ]
+```
+
+Are we really willing to stomach the fact that the above tree is exactly the
+same as @fig:shuffle-bst?
+
+```{#fig:shuffle-bst design=code/Dot.hs}
+asRose $ "5"
+  [ "10"
+    [ "9"
+    , "13" [ "14", "11" ]
+    ]
+  , "2" [ "4", "1" ]
+  ]
+```
+
+Our choice here doesn't particularly matter; what's important is to recognize
+that this is indeed a choice. It might seem like a matter of trivial semantics,
+but decisions like these are of profound significance when you playing the role
+of designer god, as we are.
+
+Computation requires this sort of precision, not because we are fans of
+precision, but because we humans are exceptionally good at fooling ourselves
+into thinking we know what we're talking about. This precision of thought is our
+only tool against false beliefs. It's often annoying and tedious, but it's a
+necessary part of the job.
 
 

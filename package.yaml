@@ -105,6 +105,7 @@ default-extensions:
   - InstanceSigs
   - RoleAnnotations
   - NoMonomorphismRestriction
+  - OverloadedStrings
 
 library:
   source-dirs: code/
