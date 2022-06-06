@@ -2,28 +2,28 @@
 
 module Objects.Tree where
 
-import Text.Pandoc.Definition
 import GHC.Generics
-import Data.Text (Text)
-import Control.Arrow ((&&&))
-import qualified Data.Text as T
 import Objects.Internal.Dot
 import Data.Foldable (for_)
-import System.Process (callProcess)
 import Data.Hashable (Hashable)
 import Objects.Internal.Types
 import Objects.Figure
-import Cache (hashFile)
+import Objects.Internal.Parser
+import Text.Megaparsec
+import Data.Bifunctor (first)
 
 
 data LRose a = LPure a | LRose a [LRose a]
   deriving stock (Eq, Read, Ord, Show, Functor, Generic, Generic1, Foldable, Traversable)
 
-instance Hashable a => Hashable (LRose a) where
+instance FromBlocks (LRose String) where
+  fromBlocks [blss]
+    = first errorBundlePretty
+    $ parse (parseLRose <* eof) ""
+    $ foldMap fromBlockStr blss
+  fromBlocks z = Left $ "Bad format\n" <> show z
 
-instance Read a => FromBlocks (LRose a) where
-  fromBlocks [[Para (Strs obj)]] = Right $ read $ T.unpack obj
-  fromBlocks z = Left $ "Bad format:\n" <> show z
+instance Hashable a => Hashable (LRose a) where
 
 instance (Hashable a, ToDot a) => IsImage (LRose a) where
   writeImage = doDot
@@ -35,4 +35,13 @@ instance ToDot a => ToDot (LRose a) where
     me <- toDot a
     for_ ns $ addEdge me
     pure me
+
+
+parseLRose :: Parser (LRose String)
+parseLRose = optionalSurround "(" ")" $ do
+  node <- str
+  children <- optional $ surrounded (sym "[") (sym "]") $ sepBy parseLRose $ sym ","
+  case children of
+    Nothing -> pure $ LPure node
+    Just lrs -> pure $ LRose node lrs
 

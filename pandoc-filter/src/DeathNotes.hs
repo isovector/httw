@@ -3,10 +3,7 @@
 
 module DeathNotes where
 
-import Text.Pandoc.Definition
 import Text.Pandoc
-import Data.List
-import qualified Data.Text as T
 
 
 pattern DeathNote :: [Block] -> Inline

@@ -2,10 +2,6 @@ module Objects.Internal.Dot where
 
 import Control.Monad.State
 import Control.Monad.Writer
-import Data.Maybe (fromMaybe)
-import Data.Bool (bool)
-import Data.List (group)
-import Data.Char (isAlphaNum)
 import System.Process (callProcess)
 import Data.Foldable (for_, foldrM, toList)
 import Data.List.NonEmpty (NonEmpty (..))

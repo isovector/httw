@@ -1,16 +1,12 @@
 module Objects.Figure where
 
-import Text.Pandoc.Definition
-import GHC.Generics
-import Cache (caching, hashFile)
-import Data.Text (Text)
-import Control.Arrow ((&&&))
+import           Data.Hashable (Hashable)
+import           Data.Text (Text)
 import qualified Data.Text as T
-import Objects.Internal.Dot
-import Data.Foldable (for_)
-import System.Process (callProcess)
-import Data.Hashable (Hashable)
-import Objects.Internal.Types
+import           GHC.Generics
+import           Objects.Internal.Types
+import           Text.Pandoc.Definition
+
 
 data Figure a = Figure
   { f_id    :: Text

@@ -32,6 +32,7 @@ dependencies:
 - process
 - lens
 - pretty-show
+- megaparsec
 - mtl
 
 default-extensions:
@@ -95,3 +96,4 @@ executables:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
+    - -Wall
