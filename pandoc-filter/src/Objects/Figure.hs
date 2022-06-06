@@ -1,5 +1,3 @@
-{-# LANGUAGE UndecidableInstances #-}
-
 module Objects.Figure where
 
 import Text.Pandoc.Definition
@@ -23,13 +21,18 @@ data Figure a = Figure
 
 instance Hashable a => Hashable (Figure a) where
 
--- instance (Hashable a, ToDot a, Show a, Read a) => IsBlockObject (Figure a) where
---   fromBlocks [[Para (Strs fid)], [Para (Strs label)], [Para (Strs obj)]]
---     = Right $ Figure fid label $ read $ T.unpack obj
---   fromBlocks z = Left $ "Bad format:\n" <> show z
---   toBlockObject (Figure fid lbl t) = do
---     fp <- error "figure out how to make me compose"
---     pure $ mkPandocFigure fid lbl fp
+instance (FromBlocks a) => FromBlocks (Figure a) where
+  fromBlocks ([Para (Strs fid)] : [Para (Strs label)] : bs)
+    = Figure fid label <$> fromBlocks bs
+  fromBlocks z = Left $ "Bad format (Figure):\n" <> show z
+
+class IsImage a where
+  writeImage :: a -> IO FilePath
+
+instance (Show a, IsImage a) => IsBlockObject (Figure a) where
+  toBlockObject (Figure fid lbl a) = do
+    fp <- writeImage a
+    pure $ mkPandocFigure fid lbl fp
 
 mkPandocFigure :: Text -> Text -> FilePath -> Block
 mkPandocFigure fid lbl fp =

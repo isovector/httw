@@ -28,14 +28,16 @@ deriving instance Show (BlockObjectType a)
 
 data SomeBlockObjectType where
   SomeBlockObjectType
-    :: IsBlockObject a => BlockObjectType a -> SomeBlockObjectType
+    :: (FromBlocks a, IsBlockObject a)
+    => BlockObjectType a -> SomeBlockObjectType
 
 
 ------------------------------------------------------------------------------
 
 data SomeBlockObject where
   SomeBlockObject
-    :: IsBlockObject a => BlockObjectType a -> a -> SomeBlockObject
+    :: (FromBlocks a, IsBlockObject a)
+    => BlockObjectType a -> a -> SomeBlockObject
 
 instance Show SomeBlockObject where
   show (SomeBlockObject ty a) = unwords

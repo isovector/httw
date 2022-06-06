@@ -11,12 +11,14 @@ import Data.Foldable (for_)
 import System.Process (callProcess)
 import Data.Hashable (Hashable)
 
-class Show a => IsBlockObject a where
+class FromBlocks a where
   fromBlocks :: [[Block]] -> Either String a
+
+class Show a => IsBlockObject a where
   toBlockObject :: a -> IO Block
 
-class Read a => IsInlineObject a where
-  toInlineObject :: String -> a -> IO [Inline]
+
+------------------------------------------------------------------------------
 
 pattern Strs :: Text -> [Inline]
 pattern Strs ts <-
