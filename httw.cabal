@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: d9505bed22e6bbfb948b3a698e883b5ad1de91f0e67b38e6c5655e49065ad271
+-- hash: a40865c45102ecc14127462026d473a204fa19a2c3014aca3e5a067facebed9a
 
 name:           httw
 version:        0.1.0.0
@@ -33,6 +33,7 @@ library
       Languages.Information
       Languages.Math
       Languages.Plane
+      Languages.Tree
       Take2.Computer.Math
       Take2.Computer.Simple
       TruthTable

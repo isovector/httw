@@ -69,7 +69,6 @@ We may then prepend the last element of the list, in this case "waffle":
 
 ```{design=code/Dot.hs #fig:list_ex2}
 ["waffle"]
-
 ```
 
 Working backwards from our desired ordering, the next thing we'd like to prepend

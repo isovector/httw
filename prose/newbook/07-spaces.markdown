@@ -283,5 +283,3 @@ towards our ends.
 let f h = sHSV (h * 360) in net 16 16 f
 ```
 
-
-

@@ -1,0 +1,4 @@
+cradle:
+  stack:
+    - path: "./code/"
+      component: "httw:lib"

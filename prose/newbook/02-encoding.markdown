@@ -69,9 +69,16 @@ information, serialized into a series of ink dots. This encoding, however, is
 lossless. The equation itself is more naturally expressed as in
 @fig:math-lossless.
 
-```{#fig:math-lossless design=code/Languages/Math.hs}
-asMath $ Equals ((2 + (7 - 3)) * 5) (28 + 2)
-```
+
+Obj/Tree
+
+  : fig:math-lossless
+
+  : Equations can be represented as trees.
+
+  : "=" [ "\*" ["+" ["2", "-" ["7", "3"]], "5"]
+        , "+"  ["28", "2"]]
+
 
 Patterns like these are the natural shapes of all mathematical expressions. The
 linear structure of $(2 + (7 - 3)) \times 5 = 28 + 2$ has been turned into a
@@ -134,19 +141,24 @@ Nevertheless, the org-chart shows how a given company works in theory, if not
 necessarily in practice! An example org-chart is given in @fig:org-chart.
 
 
-```{#fig:org-chart design=code/Dot.hs}
-asRose $ "Alan"
-  [ "Richard"
-      [ "Lisa" ["Parson", "Siobhan"]
-      , "Raymond"
+Obj/Tree
+
+  : fig:org-chart
+
+  : A typical organizational chart.
+
+  : "Alan"
+      [ "Richard"
+          [ "Lisa" ["Parson", "Siobhan"]
+          , "Raymond"
+          ]
+      , "Veronica"
+          ["Cynthia", "Mark"]
+      , "Victor"
+          ["Michael", "Tev"]
+      , "Wanda"
       ]
-  , "Veronica"
-      ["Cynthia", "Mark"]
-  , "Victor"
-      ["Michael", "Tev"]
-  , "Wanda"
-  ]
-```
+
 
 The organization presented by @fig:org-chart is a lossless encoding of the
 org-chart tree, which itself is a *lossy* encoding of the organization of the
@@ -197,13 +209,13 @@ In the business world, this corresponds to the idea that departments can be
 thought of as independent entities.
 
 
-```{#fig:suborg design=code/Dot.hs}
+```{#fig:suborg design=code/Languages/Tree.hs}
 let { sub = asRose $
         "Richard"
         [ "Lisa" ["Parson", "Siobhan"]
         , "Raymond"
         ];
-    org = "Alan"
+    org = asRose $ "Alan"
         [ sub
         , "Veronica"
             ["Cynthia", "Mark"]
@@ -287,29 +299,35 @@ Together, we say that `read` and `write` are inverses of one another.
 
 We turn our attention to finding a means of encoding trees.
 
-```{#fig:life design=code/Dot.hs}
-asRose $ "Life"
-  [ "Archaea"
-      [ "Haloarchaea"
-      , "Methanosarcina"
-      ]
-  , "Bacteria"
-      [ "Aquifex"
-      , "Cyanobacteria"
-      ]
-  , "Eukaryota"
-      [ "Animalia"
-        [ "Arthropoda"
-        , "Annelid"
-        , "Mollusca"
-          [ "Cephalopod"
+
+Obj/Tree
+
+  : fig:life
+
+  : A (partial) tree of life.
+
+  : "Life"
+      [ "Archaea"
+          [ "Haloarchaea"
+          , "Methanosarcina"
           ]
-        ]
-      , "Fungi"
-      , "Plantae"
+      , "Bacteria"
+          [ "Aquifex"
+          , "Cyanobacteria"
+          ]
+      , "Eukaryota"
+          [ "Animalia"
+            [ "Arthropoda"
+            , "Annelid"
+            , "Mollusca"
+              [ "Cephalopod"
+              ]
+            ]
+          , "Fungi"
+          , "Plantae"
+          ]
       ]
-  ]
-```
+
 
 We'd like to find a way to embed @fig:life into a series of words and symbols,
 such that we can "read" it back into the same tree. In essence, the problem here
@@ -330,17 +348,23 @@ Unfortunately, this approach doesn't seem to work, because we don't know where
 to form the subtrees. If I were ultimately antagonistic, I could read back this
 encoding as a flat tree like in @fig:bad-flat-life.
 
-```{#fig:bad-flat-life design=code/Dot.hs}
-asRose $ "Life"
-  [ "Archaea"
-  , "Bacteria"
-  , "Eukaryota"
-  , "Haloarchaea"
-  , "Methanosarcina"
-  , "Aquafex"
-  , "..."
-  ]
-```
+
+Obj/Tree
+
+  : fig:bad-flat-life
+
+  : A bad decoding.
+
+  : "Life"
+      [ "Archaea"
+      , "Bacteria"
+      , "Eukaryota"
+      , "Haloarchaea"
+      , "Methanosarcina"
+      , "Aquafex"
+      , "..."
+      ]
+
 
 In order to prevent some sort of adversarially, intentionally
 maximally-misunderstanding entity from getting the wrong idea, we clearly need
@@ -419,28 +443,39 @@ the left sub-tree is smaller than the root, while every node in the right is
 bigger than the root:
 
 
-```{#fig:bst design=code/Dot.hs}
-asRose $ "5"
-  [ "2" [ "1", "4" ]
-  , "10"
-    [ "9"
-    , "13" [ "11", "14" ]
-    ]
-  ]
-```
+Obj/Tree
+
+  : fig:bst
+
+  : A sorted tree.
+
+  : "5"
+      [ "2" [ "1", "4" ]
+      , "10"
+        [ "9"
+        , "13" [ "11", "14" ]
+        ]
+      ]
+
 
 Are we really willing to stomach the fact that the above tree is exactly the
 same as @fig:shuffle-bst?
 
-```{#fig:shuffle-bst design=code/Dot.hs}
-asRose $ "5"
-  [ "10"
-    [ "9"
-    , "13" [ "14", "11" ]
-    ]
-  , "2" [ "4", "1" ]
-  ]
-```
+
+Obj/Tree
+
+  : fig:shuffle-bst
+
+  : A unsorted tree.
+
+  : "5"
+      [ "10"
+        [ "9"
+        , "13" [ "14", "11" ]
+        ]
+      , "2" [ "4", "1" ]
+      ]
+
 
 Our choice here doesn't particularly matter; what's important is to recognize
 that this is indeed a choice. It might seem like a matter of trivial semantics,
@@ -452,5 +487,4 @@ precision, but because we humans are exceptionally good at fooling ourselves
 into thinking we know what we're talking about. This precision of thought is our
 only tool against false beliefs. It's often annoying and tedious, but it's a
 necessary part of the job.
-
 
