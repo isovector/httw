@@ -46,6 +46,7 @@ fromStr (Str s) = s
 fromStr (Quoted SingleQuote s) = "'" <> foldMap fromStr s <> "'"
 fromStr (Quoted DoubleQuote s) = "\"" <> foldMap fromStr s <> "\""
 fromStr Space = " "
+fromStr SoftBreak = " "
 fromStr _ = error "fromStr called on not a str"
 
 fromBlockStr :: Block -> Text
