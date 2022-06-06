@@ -1,0 +1,97 @@
+name:                pandoc-filter
+version:             0.1.0.0
+github:              "isovector/design-tools"
+license:             BSD3
+author:              "Sandy Maguire"
+maintainer:          "sandy@sandymaguire.me"
+copyright:           "2019 Sandy Maguire"
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/isovector/design-tools#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+- pandoc
+- pandoc-types
+- containers
+- bytestring
+- vector
+- text
+- hashable
+- directory
+- process
+- lens
+- pretty-show
+- mtl
+
+default-extensions:
+  - EmptyCase
+  - PostfixOperators
+  - TupleSections
+  - NamedFieldPuns
+  - BangPatterns
+  - BinaryLiterals
+  - HexFloatLiterals
+  - NumericUnderscores
+  - GADTSyntax
+  - RankNTypes
+  - TypeApplications
+  - PolyKinds
+  - ExistentialQuantification
+  - TypeOperators
+  - ConstraintKinds
+  - ExplicitForAll
+  - KindSignatures
+  - NamedWildCards
+  - ScopedTypeVariables
+  - FlexibleContexts
+  - FlexibleInstances
+  - MultiParamTypeClasses
+  - ConstrainedClassMethods
+  - InstanceSigs
+  - TypeSynonymInstances
+  - DeriveDataTypeable
+  - DeriveFoldable
+  - DeriveFunctor
+  - DeriveTraversable
+  - StandaloneDeriving
+  - EmptyDataDeriving
+  - DeriveLift
+  - GeneralisedNewtypeDeriving
+  - DeriveGeneric
+  - DerivingStrategies
+  - DerivingVia
+  - NumDecimals
+  - ViewPatterns
+  - PatternSynonyms
+  - TypeFamilies
+  - DeriveAnyClass
+  - NoStarIsType
+  - DataKinds
+  - DefaultSignatures
+  - TypeApplications
+  - LambdaCase
+  - OverloadedLabels
+  - InstanceSigs
+  - RoleAnnotations
+  - NoMonomorphismRestriction
+  - OverloadedStrings
+
+executables:
+  httw-filter-exe:
+    main:                Main.hs
+    source-dirs:         src
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
