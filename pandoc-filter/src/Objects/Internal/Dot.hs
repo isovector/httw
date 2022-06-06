@@ -9,6 +9,8 @@ import Data.Char (isAlphaNum)
 import System.Process (callProcess)
 import Data.Foldable (for_, foldrM, toList)
 import Data.List.NonEmpty (NonEmpty (..))
+import Data.Hashable (Hashable)
+import Cache (hashFile, caching)
 
 
 newtype DotM a = DotM
@@ -149,16 +151,6 @@ addLabeledEdge lbl n1 n2 = do
   tell $ pure $ nodeName n1 <> " -> " <> nodeName n2 <> "[label=" <> show lbl <> "]"
 
 
-
-__makeFigName :: String -> String
-__makeFigName
-    = concatMap (\x -> bool x (take 1 x) $ take 1 x == "_")
-    . group
-    . fmap go
-  where
-    go c | isAlphaNum c = c
-    go _ = '_'
-
 instance ToDot Char where
   toDot = newNode . pure
 
@@ -174,5 +166,31 @@ makeLabeledTree s (unzip -> (lbs, as)) = do
   ns <- traverse toDot as
   foldrM (\(lbl, a) n' -> addLabeledEdge lbl n' a >> pure n') n $ zip lbs ns
 
+doDot
+    :: (ToDot a, Hashable a)
+    => a
+    -> IO FilePath
+doDot a = caching a $ do
+  let fp = hashFile a <> ".png"
+  writeFile "/tmp/output.dot" $ runDotM $ toDot a
+
+  callProcess "dot"
+    [ "-Tpng"
+    , "-Gdpi=300"
+    , "-o/tmp/out.png"
+    , "/tmp/output.dot"
+    ]
+  callProcess "convert"
+    [ "/tmp/out.png"
+    , "-density"
+    , "300"
+    , "-units"
+    , "pixelsperinch"
+    , "-resize"
+    , "40%"
+    , fp
+    ]
+
+  pure fp
 
 

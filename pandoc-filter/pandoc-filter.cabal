@@ -33,7 +33,9 @@ executable httw-filter-exe
       KEndo
       Lib
       Object
+      Objects.Figure
       Objects.Internal.Dot
+      Objects.Internal.Types
       Objects.Tree
       Snippets
       Paths_pandoc_filter
