@@ -38,10 +38,14 @@ instance ToDot a => ToDot (LRose a) where
 
 
 parseLRose :: Parser (LRose String)
-parseLRose = optionalSurround "(" ")" $ do
+parseLRose = optionalSurround (sym "(") (sym ")") $ do
   node <- str
-  children <- optional $ surrounded (sym "[") (sym "]") $ sepBy parseLRose $ sym ","
-  case children of
-    Nothing -> pure $ LPure node
-    Just lrs -> pure $ LRose node lrs
+  children
+    <- optional
+     $ surrounded (sym "[") (sym "]")
+     $ sepBy parseLRose
+     $ sym ","
+  pure $ case children of
+    Nothing -> LPure node
+    Just lrs -> LRose node lrs
 
