@@ -11,6 +11,7 @@ import Data.Foldable (for_)
 import System.Process (callProcess)
 import Data.Hashable (Hashable)
 
+
 class FromBlocks a where
   fromBlocks :: [[Block]] -> Either String a
 

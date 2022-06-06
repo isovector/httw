@@ -3,9 +3,12 @@ CONTENT := newbook
 IMAGES := $(addprefix build/,$(wildcard images/*.png))
 DESIGN_IMAGES := $(addprefix build/,$(wildcard .design-tools/*.png))
 
+FILTER_EXE := $(shell cd pandoc-filter; stack exec which httw-filter-exe )
+FILTER_HS := $(shell find pandoc-filter/ -type f -name '*.hs')
+
 PANDOC_OPTS := --highlight-style theme/highlighting.theme \
                --syntax-definition=theme/haskell.xml \
-               --filter design-tools-exe \
+               --filter $(FILTER_EXE) \
                -F pandoc-crossref \
                --citeproc \
                --from markdown+fancy_lists+yaml_metadata_block \
@@ -43,14 +46,14 @@ build/missing-from-sample.pdf:
 
 sources = $(addsuffix .tex,$(addprefix build/tex/,$(RULES)))
 prose = $(addsuffix /*.markdown,$(addprefix prose/,$(CONTENT)))
-$(sources): build/tex/%.tex: prose/metadata.markdown prose/%.markdown $(prose) format/tex/template.tex theme/* prose/bib.bib $(IMAGES) format/tex/cover.pdf
+$(sources): build/tex/%.tex: prose/metadata.markdown prose/%.markdown $(prose) format/tex/template.tex theme/* prose/bib.bib $(IMAGES) format/tex/cover.pdf $(FILTER_EXE)
 	pandoc $(PANDOC_OPTS) $(PANDOC_PDF_OPTS) -o $@ $(filter %.markdown,$^)
 	cp .design-tools/*.png build/.design-tools
 	sed -i 's/\CommentTok{{-}{-} ! \([0-9]\)}/annotate{\1}/g' $@
 	sed -i 's/\CommentTok{{-}{-} .via \([^}]\+\)}/reducevia{\1}/g' $@
 	sed -i 's/\(\\KeywordTok{law} \\StringTok\){"\([^"]\+\)"}/\1{\\lawname{\2}}/g' $@
 
-build/epub.epub: build/%.epub: prose/metadata.markdown prose/%.markdown $(prose) theme/* prose/bib.bib $(IMAGES) format/epub.css
+build/epub.epub: build/%.epub: prose/metadata.markdown prose/%.markdown $(prose) theme/* prose/bib.bib $(IMAGES) format/epub.css $(FILTER_EXE)
 	pandoc $(PANDOC_OPTS) --epub-embed-font=Katibeh.ttf -t epub -o $@ $(filter %.markdown,$^)
 
 .PHONY: clean clean-images very-clean all $(RULES) epub lp sketches
@@ -64,6 +67,9 @@ clean:
 clean-images:
 	grep -l .png .design-tools/* | xargs rm
 	rm .design-tools/*.png
+
+$(FILTER_EXE): $(FILTER_HS)
+	cd pandoc-filter; stack build
 
 very-clean: clean
 	rm -r .design-tools

@@ -17,7 +17,7 @@ import System.IO
 import Data.List
 
 import Text.Show.Pretty
-import Objects.Tree (walkIt)
+import Object (walkIt)
 
 
 main :: IO ()
